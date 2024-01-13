@@ -6,6 +6,7 @@ const express = require('express')
 
 async function main() {
     await mongoose.connect(process.env.MONGODB_CONNECTION_STRING)
+    console.log('MongoDB connected successfully')
     const app = express()
     const httpServer = require('http').createServer(app)
 
