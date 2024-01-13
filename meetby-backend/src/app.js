@@ -9,6 +9,8 @@ async function main() {
     const app = express()
     const httpServer = require('http').createServer(app)
 
+    app.use(express.json())
+
     const serverPort = process.env.WEB_SERVER_PORT || 8080
     httpServer.listen(serverPort, () => {
         console.log(`Web server is running on port ${serverPort}`)
