@@ -2,6 +2,7 @@ require('dotenv').config()
 
 const mongoose = require('mongoose')
 const express = require('express')
+const cors = require('cors')
 
 
 async function main() {
@@ -10,6 +11,7 @@ async function main() {
     const app = express()
     const httpServer = require('http').createServer(app)
 
+    app.use(cors())
     app.use(express.json())
 
     const serverPort = process.env.WEB_SERVER_PORT || 8080
