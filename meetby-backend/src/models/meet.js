@@ -44,7 +44,7 @@ const MeetSchema = Schema({
             }]
         }
     ],
-    invitedUsers: [ {type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+    invitedUsers: [ {type: mongoose.Schema.Types.ObjectId, ref: "User" } ],
     invitedGuests: [ 
         { 
             type: String,
