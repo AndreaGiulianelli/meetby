@@ -5,20 +5,33 @@ const { asyncController } = require('./utils/asyncController')
 const { generateToken } = require('../services/jwtService')
 
 exports.signup = asyncController(async (req, res) => {
-    const { email, password } = req.body
+    const { 
+        name,
+        surname,
+        username,
+        email,
+        password,
+    } = req.body
 
-    if (!email || !password) {
+    if (!name || !surname || !username || !email || !password) {
         return res.status(400).json({ message: "Provide the required fields to be able to signup" })
     }
 
-    if (await User.findOne({ email: email })) {
+    if (await User.findOne({ email: email  })) {
         return res.status(409).json({ message: "User already registered" })
+    }
+
+    if (await User.findOne({ username: username  })) {
+        return res.status(409).json({ message: "Username already registered, select a different username" })
     }
 
     const generatedSalt = await bcrypt.genSalt()
     const hashedPassword = await bcrypt.hash(password, generatedSalt)
 
     const newUser = new User({
+        name: name,
+        surname: surname,
+        username: username,
         email: email,
         password: hashedPassword
     })
