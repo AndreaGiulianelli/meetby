@@ -1,5 +1,6 @@
-const authJwtController = require('../controllers/authController')
 const authJwtMiddleare = require('../middlewares/authJwtMiddleware')
+const authJwtController = require('../controllers/authController')
+const meetsController = require('../controllers/meetsController')
 
 module.exports = (app) => {
     app.route('/signup')
@@ -9,7 +10,7 @@ module.exports = (app) => {
         .post(authJwtController.login)
 
     // TODO: TO DELETE
-    app.route('/test')
-        .get(authJwtMiddleare.verify, (req, res) => { res.status(200).json({userId: req.userId}) })
+    app.route('/meets')
+        .post(authJwtMiddleare.verify, meetsController.createNewMeet)
 
 }
