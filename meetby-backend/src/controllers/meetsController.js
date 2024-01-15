@@ -4,15 +4,13 @@ const { asyncController } = require('./utils/asyncController')
 
 
 exports.createNewMeet = asyncController(async (req, res) => {
-    if (!req.body.invitedUsers) {
-        return res.status(400).json({ message: "Invalid data provided" })
+    if (req.body.invitedUsers) {
+        req.body.invitedUsers.forEach(async invitedUserId => {
+            if (!await User.findById(invitedUserId)) {
+                return res.status(400).json({ message: "Invalid data provided" })
+            }
+        });
     }
-    
-    req.body.invitedUsers.forEach(async invitedUserId => {
-        if (!await User.findById(invitedUserId)) {
-            return res.status(400).json({ message: "Invalid data provided" })
-        }
-    });
 
     try {
         const meet = new Meet({
@@ -28,6 +26,41 @@ exports.createNewMeet = asyncController(async (req, res) => {
         })
         await meet.save()
         return res.status(201).send()
+    } catch(err) {
+        return res.status(400).json({ message: "Invalid data provided" })
+    }
+})
+
+exports.updateMeet = asyncController(async (req, res) => {
+    if (req.body.invitedUsers) {
+        req.body.invitedUsers.forEach(async invitedUserId => {
+            if (!await User.findById(invitedUserId)) {
+                return res.status(400).json({ message: "Invalid data provided" })
+            }
+        });
+    }
+
+    const oldMeet = Meet.findById(req.params.meetId)
+    if (!oldMeet) {
+        return res.status(404).send()
+    }
+    if (oldMeet.plannedDateTime) {
+        return res.status(409).json({ message: "It is not possible to update a planned meet" })
+    }
+
+    try {
+        await Meet.findByIdAndUpdate(req.params.meetId, {
+            title: req.body.title,
+            duration: req.body.duration,
+            creator: req.userId,
+            place: req.body.place,
+            description: req.body.description,
+            meetingUrl: req.body.meetingUrl,
+            proposedAvailabilities: (req.body.proposedAvailabilities) ? req.body.proposedAvailabilities.map(a => ({ availability: a })) : undefined, // after update each one should reset their availabilities
+            invitedUsers: req.body.invitedUsers,
+            invitedGuests: req.body.invitedGuests,
+        }, {runValidators: true} )
+        return res.status(204).send()
     } catch(err) {
         return res.status(400).json({ message: "Invalid data provided" })
     }
