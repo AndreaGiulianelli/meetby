@@ -11,6 +11,7 @@ module.exports = (app) => {
         .post(authJwtController.login)
 
     app.route('/meets')
+        .get(authJwtMiddleare.verify, meetsController.getAllMeets)
         .post(authJwtMiddleare.verify, meetsController.createNewMeet)
 
     app.route('/meets/:meetId')
