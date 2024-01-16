@@ -53,6 +53,7 @@ const MeetSchema = Schema({
             ]
         }
     ],
+    creationDate: Date,
     plannedDateTime: {
         type: Date,
         required: false,
