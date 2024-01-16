@@ -11,3 +11,27 @@ exports.isMeetCreator = (req, res, next) => {
         next()
     })
 }
+
+exports.isMeetInPlanning = (req, res, next) => {
+    Meet.findById(req.params.meetId).then((meet) => {
+        if (!meet) {
+            return res.status(404).send()
+        }
+        if (meet.plannedDateTime) {
+            return res.status(409).json({ message: "The meet is not in planning" })
+        }
+        next()
+    })
+}
+
+exports.isMeetNotConcluded = (req, res, next) => {
+    Meet.findById(req.params.meetId).then((meet) => {
+        if (!meet) {
+            return res.status(404).send()
+        }
+        if (meet.plannedDateTime && new Date(meet.plannedDateTime).getTime() < new Date().getTime() ) {
+            return res.status(409).json({ message: "The meeting is already over" })
+        }
+        next()
+    })
+}
