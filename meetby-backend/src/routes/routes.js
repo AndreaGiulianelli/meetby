@@ -1,5 +1,5 @@
 const authJwtMiddleare = require('../middlewares/authJwtMiddleware')
-const meetCreatorMiddleare = require('../middlewares/meetCreatorMiddleware')
+const meetMiddleare = require('../middlewares/meetMiddleware')
 const authJwtController = require('../controllers/authController')
 const meetsController = require('../controllers/meetsController')
 
@@ -16,6 +16,6 @@ module.exports = (app) => {
 
     app.route('/meets/:meetId')
         .get(meetsController.getMeet)
-        .put([ authJwtMiddleare.verify, meetCreatorMiddleare.isMeetCreator ], meetsController.updateMeet)
+        .put([ authJwtMiddleare.verify, meetMiddleare.isMeetCreator ], meetsController.updateMeet)
 
 }
