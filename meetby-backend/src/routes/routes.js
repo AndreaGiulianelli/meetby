@@ -16,6 +16,13 @@ module.exports = (app) => {
 
     app.route('/meets/:meetId')
         .get(meetsController.getMeet)
-        .put([ authJwtMiddleare.verify, meetMiddleare.isMeetCreator ], meetsController.updateMeet)
+        .put(
+            [ 
+                authJwtMiddleare.verify,
+                meetMiddleare.isMeetCreator, 
+                meetMiddleare.isMeetInPlanning 
+            ],
+            meetsController.updateMeet
+        )
 
 }
