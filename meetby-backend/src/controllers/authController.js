@@ -53,6 +53,6 @@ exports.login = asyncController(async (req, res) => {
         return res.status(401).send()
     }
 
-    const token = generateToken(user.id)
+    const token = generateToken(user._id)
     res.status(200).json({ accessToken: token })
 })
