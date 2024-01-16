@@ -116,3 +116,56 @@ exports.getAllMeets = asyncController(async (req, res) => {
 
     return res.status(200).json(meets)
 })
+
+exports.getMeet = asyncController(async (req, res) => {
+    const pipeline = [
+        {
+            $match: { 
+                _id: new mongoose.Types.ObjectId(req.params.meetId),
+            },
+        },
+        {
+            $lookup: {
+                from: 'users',
+                localField: 'creator',
+                foreignField: '_id',
+                as: 'meetCreator'
+            }
+        },
+        {
+            $lookup: {
+                from: 'users',
+                localField: 'invitedUsers',
+                foreignField: '_id',
+                as: 'invitedUsers'
+            }
+        },
+        {
+            $project: {
+                'title': 1,
+                'meetCreator._id': 1,
+                'meetCreator.name': 1,
+                'meetCreator.surname': 1,
+                'duration': 1,
+                'place': 1,
+                'description': 1,
+                'meetingUrl': 1,
+                'invitedUsers._id': 1,
+                'invitedUsers.name': 1,
+                'invitedUsers.surname': 1,
+                'invitedGuests': 1,
+                'creationDate': 1,
+                'plannedDateTime': 1,
+                'proposedAvailabilities': 1,
+            }
+        }
+    ]
+
+    const meet = await Meet.aggregate(pipeline)
+    if (!meet) {
+        return res.status(404).send()
+    }
+
+    return res.status(200).json(meet)
+})
+
