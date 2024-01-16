@@ -69,9 +69,22 @@ exports.updateMeet = asyncController(async (req, res) => {
 })
 
 exports.getAllMeets = asyncController(async (req, res) => {
+    const query = { 
+        $or: [
+            { creator: new mongoose.Types.ObjectId(req.userId) },
+            { invitedUsers: new mongoose.Types.ObjectId(req.userId) }
+        ],
+    }
+
+    if (req.query.status == "planned") {
+        query.plannedDateTime = { $ne: null }
+    } else if (req.query.status == "planning") {
+        query.plannedDateTime = { $exists: false }
+    }
+
     const pipeline = [
         {
-            $match: { $or: [{ creator: new mongoose.Types.ObjectId(req.userId) }, { invitedUsers: new mongoose.Types.ObjectId(req.userId) }] },
+            $match: query,
         },
         {
             $lookup: {
