@@ -1,3 +1,4 @@
+const mongoose = require('mongoose')
 const Meet = require('../models/meet')
 const User = require('../models/user')
 const { asyncController } = require('./utils/asyncController')
@@ -23,6 +24,7 @@ exports.createNewMeet = asyncController(async (req, res) => {
             proposedAvailabilities: req.body.proposedAvailabilities.map(a => ({ availability: a })),
             invitedUsers: req.body.invitedUsers,
             invitedGuests: req.body.invitedGuests,
+            creationDate: new Date()
         })
         await meet.save()
         return res.status(201).send()
@@ -64,4 +66,40 @@ exports.updateMeet = asyncController(async (req, res) => {
     } catch(err) {
         return res.status(400).json({ message: "Invalid data provided" })
     }
+})
+
+exports.getAllMeets = asyncController(async (req, res) => {
+    const pipeline = [
+        {
+            $match: { $or: [{ creator: new mongoose.Types.ObjectId(req.userId) }, { invitedUsers: new mongoose.Types.ObjectId(req.userId) }] },
+        },
+        {
+            $lookup: {
+                from: 'users',
+                localField: 'creator',
+                foreignField: '_id',
+                as: 'meetCreator'
+            }
+        },
+        {
+            $project: {
+                'meetCreator._id': 1,
+                'meetCreator.name': 1,
+                'meetCreator.surname': 1,
+                'title': 1,
+                'invitedUsers': 1,
+                'invitedGuests': 1,
+                'creationDate': 1,
+                'plannedDateTime': 1,
+            }
+        }
+    ]
+
+    const meets = await Meet.aggregate(pipeline).sort({ creationDate: -1 })
+
+    if (meets.lenght == 0) {
+        return res.status(204).send()
+    }
+
+    return res.status(200).json(meets)
 })
