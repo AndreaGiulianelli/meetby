@@ -15,6 +15,7 @@ module.exports = (app) => {
         .post(authJwtMiddleare.verify, meetsController.createNewMeet)
 
     app.route('/meets/:meetId')
+        .get(meetsController.getMeet)
         .put([ authJwtMiddleare.verify, meetCreatorMiddleare.isMeetCreator ], meetsController.updateMeet)
 
 }
