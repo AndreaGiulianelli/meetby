@@ -110,7 +110,7 @@ exports.getAllMeets = asyncController(async (req, res) => {
 
     const meets = await Meet.aggregate(pipeline).sort({ creationDate: -1 })
 
-    if (meets.lenght == 0) {
+    if (meets.length == 0) {
         return res.status(204).send()
     }
 
