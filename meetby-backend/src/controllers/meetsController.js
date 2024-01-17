@@ -178,3 +178,39 @@ exports.deleteMeet = asyncController(async (req, res) => {
 
     return res.status(204).send()
 })
+
+exports.setPersonalAvailabilities = asyncController(async (req, res) => {
+    const availabilities = req.body
+    if (!availabilities || !Array.isArray(availabilities)) {
+        return res.status(400).json({ message: 'Please, provide an array of availabilities' })
+    }
+    const userToAdd = req.userId ? req.userId : req.guestEmail
+    const arrayToDelete = `proposedAvailabilities.$[].${req.userId ? 'availableUsers' : 'availableGuests'}`
+    const arrayToModify = `proposedAvailabilities.$[elem].${req.userId ? 'availableUsers' : 'availableGuests'}`
+
+    // Remove previous availabilities
+    await Meet.findByIdAndUpdate(req.params.meetId, {
+        $pull: { [arrayToDelete]: userToAdd }
+    })
+
+    // Add new availabilities
+    availabilities.forEach(async availability => {
+        try {
+            const meet = await Meet.findByIdAndUpdate(req.params.meetId,
+                {
+                    $addToSet: {
+                        [arrayToModify] : userToAdd
+                    }
+                },
+                {
+                    arrayFilters: [ { 'elem.availability': availability } ],
+                    runValidators: true,
+                }
+            )
+        } catch(err) {
+            return res.status(400).json({ message: "Invalid data provided for some or all availabilities" })
+        }
+    })
+
+    return res.status(204).send()
+})
