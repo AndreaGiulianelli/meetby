@@ -42,4 +42,14 @@ module.exports = (app) => {
             ],
             meetsController.setPersonalAvailabilities
         )
+
+    app.route('/meets/:meetId/partecipations')
+        .delete(
+            [
+                authJwtMiddleare.verifyOrGuest,
+                meetMiddleare.isInvited,
+                meetMiddleare.isMeetNotConcluded
+            ],
+            meetsController.leaveMeet
+        )
 }
