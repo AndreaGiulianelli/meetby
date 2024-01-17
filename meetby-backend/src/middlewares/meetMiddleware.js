@@ -12,6 +12,23 @@ exports.isMeetCreator = (req, res, next) => {
     })
 }
 
+exports.isInvited = (req, res, next) => {
+    const userToCheck = req.userId ? req.userId : req.guestEmail
+    Meet.findById(req.params.meetId).then((meet) => {
+        if (!meet) {
+            return res.status(404).send()
+        }
+        if (
+            meet.creator != userToCheck
+            && !meet.invitedUsers.includes(userToCheck)
+            && !meet.invitedGuests.includes(userToCheck)
+        ) {
+            return res.status(401).json({ message: "You are not invited to the meet" })
+        }
+        next()
+    })
+}
+
 exports.isMeetInPlanning = (req, res, next) => {
     Meet.findById(req.params.meetId).then((meet) => {
         if (!meet) {
