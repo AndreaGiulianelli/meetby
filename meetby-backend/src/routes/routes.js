@@ -32,4 +32,14 @@ module.exports = (app) => {
             ],
             meetsController.deleteMeet
         )
+
+    app.route('/meets/:meetId/availabilities')
+        .put(
+            [
+                authJwtMiddleare.verifyOrGuest,
+                meetMiddleare.isInvited,
+                meetMiddleare.isMeetInPlanning
+            ],
+            meetsController.setPersonalAvailabilities
+        )
 }
