@@ -24,5 +24,12 @@ module.exports = (app) => {
             ],
             meetsController.updateMeet
         )
-
+        .delete(
+            [
+                authJwtMiddleare.verify,
+                meetMiddleare.isMeetCreator,
+                meetMiddleare.isMeetNotConcluded
+            ],
+            meetsController.deleteMeet
+        )
 }
