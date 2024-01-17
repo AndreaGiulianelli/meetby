@@ -214,3 +214,18 @@ exports.setPersonalAvailabilities = asyncController(async (req, res) => {
 
     return res.status(204).send()
 })
+
+exports.leaveMeet = asyncController(async (req, res) => {
+    const userThatLeave = req.userId ? req.userId : req.guestEmail
+    const proposedAvailabilitiesToLeave = `proposedAvailabilities.$[].${req.userId ? 'availableUsers' : 'availableGuests'}`
+    const invitationToLeave = req.userId ? 'invitedUsers' : 'invitedGuests'
+
+    await Meet.findByIdAndUpdate(req.params.meetId, {
+        $pull: { 
+            [proposedAvailabilitiesToLeave]: userThatLeave, 
+            [invitationToLeave]: userThatLeave 
+        },
+    })
+
+    return res.status(204).send()
+})
