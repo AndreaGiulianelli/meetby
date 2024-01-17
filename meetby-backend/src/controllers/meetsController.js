@@ -169,3 +169,12 @@ exports.getMeet = asyncController(async (req, res) => {
     return res.status(200).json(meet)
 })
 
+exports.deleteMeet = asyncController(async (req, res) => {
+    const deletedMeet = await Meet.findByIdAndDelete(req.params.meetId)
+    
+    if (!deletedMeet) {
+        return res.status(404).send()
+    }
+
+    return res.status(204).send()
+})
