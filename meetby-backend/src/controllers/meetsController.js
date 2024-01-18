@@ -2,6 +2,8 @@ const mongoose = require('mongoose')
 const Meet = require('../models/meet')
 const User = require('../models/user')
 const { asyncController } = require('./utils/asyncController')
+const meetsService = require('../services/meetsService')
+const { ignoreOrderCompare } = require('../utils/arrayUtils')
 
 
 exports.createNewMeet = asyncController(async (req, res) => {
@@ -42,13 +44,14 @@ exports.updateMeet = asyncController(async (req, res) => {
         });
     }
 
-    const oldMeet = Meet.findById(req.params.meetId)
+    const oldMeet = await Meet.findById(req.params.meetId)
     if (!oldMeet) {
         return res.status(404).send()
     }
-    if (oldMeet.plannedDateTime) {
-        return res.status(409).json({ message: "It is not possible to update a planned meet" })
-    }
+
+    // If the old meet proposed availabilities have been modified, then the users' and guests' availabilities will be restored
+    const oldMeetAvailabilities = oldMeet.proposedAvailabilities.map(proposedAvailability => proposedAvailability.availability)
+    const areProposedAvailabilitiesUpdated = !ignoreOrderCompare(oldMeetAvailabilities, req.body.proposedAvailabilities)
 
     try {
         await Meet.findByIdAndUpdate(req.params.meetId, {
@@ -58,10 +61,13 @@ exports.updateMeet = asyncController(async (req, res) => {
             place: req.body.place,
             description: req.body.description,
             meetingUrl: req.body.meetingUrl,
-            proposedAvailabilities: (req.body.proposedAvailabilities) ? req.body.proposedAvailabilities.map(a => ({ availability: a })) : undefined, // after update each one should reset their availabilities
+            proposedAvailabilities: (req.body.proposedAvailabilities && areProposedAvailabilitiesUpdated) ? req.body.proposedAvailabilities.map(a => ({ availability: a })) : undefined,
             invitedUsers: req.body.invitedUsers,
             invitedGuests: req.body.invitedGuests,
         }, {runValidators: true} )
+        
+        await meetsService.checkAndPlan(req.params.meetId)
+        
         return res.status(204).send()
     } catch(err) {
         return res.status(400).json({ message: "Invalid data provided" })
@@ -194,7 +200,7 @@ exports.setPersonalAvailabilities = asyncController(async (req, res) => {
     })
 
     // Add new availabilities
-    availabilities.forEach(async availability => {
+    for (const availability of availabilities) {
         try {
             const meet = await Meet.findByIdAndUpdate(req.params.meetId,
                 {
@@ -210,7 +216,9 @@ exports.setPersonalAvailabilities = asyncController(async (req, res) => {
         } catch(err) {
             return res.status(400).json({ message: "Invalid data provided for some or all availabilities" })
         }
-    })
+    }
+    
+    await meetsService.checkAndPlan(req.params.meetId)
 
     return res.status(204).send()
 })
@@ -226,6 +234,8 @@ exports.leaveMeet = asyncController(async (req, res) => {
             [invitationToLeave]: userThatLeave 
         },
     })
+
+    await meetsService.checkAndPlan(req.params.meetId)
 
     return res.status(204).send()
 })
