@@ -1,0 +1,5 @@
+$defaultFont: Lato, sans-serif;
+
+@use "vuetify" with (
+    $body-font-family: $defaultFont
+);
