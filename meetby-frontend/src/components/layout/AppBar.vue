@@ -47,10 +47,10 @@ function switchDrawer() {
                     Logout
                 </v-btn>
                 <template v-else>
-                    <v-btn block class="black-btn mb-1">
+                    <v-btn block class="black-btn mb-1" aria-label="Logout">
                         Login
                     </v-btn>
-                    <v-btn block class="black-btn">
+                    <v-btn block class="black-btn" aria-label="Sign Up">
                         Sign Up
                     </v-btn>
                 </template>
