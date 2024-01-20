@@ -6,7 +6,9 @@ import SimpleFooter from './components/SimpleFooter.vue'
 <template>
   <v-app>
     <v-main>
-      <RouterView />
+      <v-container fluid>
+        <RouterView />
+      </v-container>
     </v-main>
     <SimpleFooter />
   </v-app>
