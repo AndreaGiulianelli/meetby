@@ -1,5 +1,26 @@
-$defaultFont: Lato, sans-serif;
+$defaultFont: Roboto, sans-serif;
 
 @use "vuetify" with (
     $body-font-family: $defaultFont
 );
+
+.black-btn {
+    @extend .font-weight-bold;
+    color: rgb(var(--v-theme-paletteWhite));
+    background: rgb(var(--v-theme-paletteBlack));
+    padding: 25px 0px;
+}
+
+.blue-btn {
+    @extend .font-weight-bold;
+    color: rgb(var(--v-theme-paletteWhite));
+    background: rgb(var(--v-theme-paletteBlue));
+    padding: 25px 0px;
+}
+
+.red-btn {
+    @extend .font-weight-bold;
+    color: rgb(var(--v-theme-paletteWhite));
+    background: rgb(var(--v-theme-paletteRed));
+    padding: 25px 0px;
+}
