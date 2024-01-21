@@ -3,6 +3,7 @@ import { useAuthStore } from '@/stores/auth.js'
 import HomePage from '@/views/HomePage.vue'
 import LoginPage from '@/views/LoginPage.vue'
 import SignUpPage from '@/views/SignUpPage.vue'
+import NotFound from '@/views/NotFound.vue'
 
 const routes = [
   {
@@ -20,6 +21,7 @@ const routes = [
     name: 'signup',
     component: SignUpPage
   },
+  { path: '/:pathMatch(.*)*', name: 'not-found', component: NotFound },
 ]
 
 const router = createRouter({
