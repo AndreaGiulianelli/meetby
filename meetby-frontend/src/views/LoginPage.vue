@@ -1,0 +1,66 @@
+<script setup>
+import { ref } from 'vue'
+
+const email = ref('')
+const password = ref('')
+const showLoginError = ref()
+
+const passwordRules = [
+    value => {
+        if (value) return true
+        return 'Password is required.'
+    }
+]
+
+const emailRules = [
+    value => {
+        if (value) return true
+        return 'E-mail is requred.'
+    },
+    value => {
+        if (/.+@.+\..+/.test(value)) return true
+        return 'E-mail must be valid.'
+    },
+]
+
+function login() {
+    // TODO: implement
+}
+
+</script>
+
+<template>
+    <v-row>
+        <v-col cols="12" class="mb-2">
+            <div class="px-6 pt-5 text-center">
+                <p class="main-title font-weight-black mb-2">Hey! Nice to see you again</p>
+                <p class="px-5">
+                    Login to start <i>meetby</i> everybody
+                </p>
+            </div>
+        </v-col>
+    </v-row>
+    <v-row>
+        <v-spacer></v-spacer>
+        <v-col cols="11" md="4" lg="3">
+            <v-form @submit.prevent="login">
+                <v-container>
+                    <v-row>
+                        <v-col cols="12">
+                            <v-text-field :rules="emailRules" bg-color="paletteGrey" v-model="email" label="Email" color="black" type="email" autocomplete="true" required/>
+                            <v-text-field :rules="passwordRules" bg-color="paletteGrey" v-model="password" label="Password" type="password" color="black" required />
+                            <div class="font-weight-bold text-paletteRed" v-if="showLoginError">Email or Password are incorrect</div>
+                        </v-col>
+                        <v-col cols="12" class="mt-3">
+                            <v-btn block type="submit" class="black-btn" aria-label="Login">
+                                Login
+                            </v-btn>
+                            <p class="font-weight-bold">Don’t have an account yet? <router-link to="/signup" class="text-paletteBlue">Sign up</router-link></p>
+                        </v-col>
+                    </v-row>
+                </v-container>
+            </v-form>
+        </v-col>
+        <v-spacer></v-spacer>
+    </v-row>
+</template>
