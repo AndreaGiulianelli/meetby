@@ -1,5 +1,9 @@
 <script setup>
 import { ref } from 'vue'
+import { useRouter } from 'vue-router'
+import authService from '@/services/AuthorizationService.js'
+
+const router = useRouter()
 
 const isFormValid = ref(false)
 
@@ -11,6 +15,8 @@ const password = ref('')
 
 const showPassword = ref(false)
 const showConfirmPassword = ref(false)
+const showEmailError = ref(false)
+const showUsernameError = ref(false)
 
 const nameRules = [
     value => {
@@ -30,8 +36,7 @@ const usernameRules = [
     value => {
         if (value) return true
         return 'Username is required.'
-    },
-    // TODO: implement username already exists
+    }
 ]
 
 const passwordRules = [
@@ -64,9 +69,25 @@ const emailRules = [
 ]
 
 
-function signup() {
+async function signup() {
     if (isFormValid.value) {
-        // TODO: implement
+        showEmailError.value = false
+        showUsernameError.value = false
+
+        const response = await authService.signup({
+            name: name.value,
+            surname: surname.value,
+            username: username.value,
+            email: email.value,
+            password: password.value,
+        })
+        if (response.success) {
+            router.replace({ name: "login" })
+        } else if (response.error === "username") {
+            showUsernameError.value = true
+        } else {
+            showEmailError.value = true
+        }
     }
 }
 
@@ -97,6 +118,10 @@ function signup() {
                                 :append-inner-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'" :type="showPassword ? 'text' : 'password'" color="black" @click:append-inner="showPassword = !showPassword" required />
                             <v-text-field class="mb-3" hide-details="auto" :rules="confirmPasswordRules" bg-color="paletteGrey" label="Confirm password" :append-inner-icon="showConfirmPassword ? 'mdi-eye' : 'mdi-eye-off'"
                                 :type="showConfirmPassword ? 'text' : 'password'" color="black" @click:append-inner="showConfirmPassword = !showConfirmPassword" required />
+                        </v-col>
+                        <v-col cols="12">
+                            <div class="font-weight-bold text-paletteRed" v-if="showEmailError">Email already registered</div>
+                            <div class="font-weight-bold text-paletteRed" v-if="showUsernameError">Username already registered</div>
                         </v-col>
                         <v-col cols="12" class="mt-3">
                             <v-btn block type="submit" class="black-btn" aria-label="Signup">
