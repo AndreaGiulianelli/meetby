@@ -20,6 +20,12 @@ const items = [
 function switchDrawer() {
     drawer.value = !drawer.value
 }
+
+function logout() {
+    store.logout()
+    router.push({ name: "home" })
+}
+
 </script>
 
 <template>
@@ -45,14 +51,14 @@ function switchDrawer() {
         
         <template v-slot:append>
             <div class="pa-2 mb-4">
-                <v-btn block class="black-btn" @click.prevent="store.logout" v-if="store.isLoggedIn">
+                <v-btn block class="black-btn" @click.prevent="logout" v-if="store.isLoggedIn">
                     Logout
                 </v-btn>
                 <template v-else>
-                    <v-btn block class="black-btn mb-1" aria-label="Login" to="/login">
+                    <v-btn block @click="switchDrawer" class="black-btn mb-1" aria-label="Login" to="/login">
                         Login
                     </v-btn>
-                    <v-btn block class="black-btn" aria-label="Sign Up" to="/signup">
+                    <v-btn block @click="switchDrawer" class="black-btn" aria-label="Sign Up" to="/signup">
                         Sign Up
                     </v-btn>
                 </template>
