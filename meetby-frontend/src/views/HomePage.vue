@@ -11,7 +11,7 @@
     </v-row>
     <v-row class="mt-16">
         <v-spacer></v-spacer>
-        <v-col cols="10">
+        <v-col cols="10" md="4" lg="3">
             <v-btn block class="black-btn" aria-label="Logout">
                 Join and plan
             </v-btn>
