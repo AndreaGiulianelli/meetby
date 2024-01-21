@@ -1,10 +1,12 @@
 <script setup>
 import { ref } from 'vue'
 import { useDisplay } from 'vuetify'
+import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth.js'
 
 const drawer = ref(false)
 const store = useAuthStore()
+const router = useRouter()
 const { mobile } = useDisplay()
 
 const items = [
@@ -23,9 +25,9 @@ function switchDrawer() {
 <template>
     <v-app-bar :elevation="0">
         <v-app-bar-nav-icon icon="mdi-menu" aria-label="Menu" size="x-large" @click.stop="switchDrawer"/>
-        <v-app-bar-title class="app-bar font-weight-black">
-            meetby
-        </v-app-bar-title>
+            <v-app-bar-title class="app-bar font-weight-black" @click.stop="router.push('/')">
+                meetby
+            </v-app-bar-title>
         <v-spacer />
     </v-app-bar>
 
@@ -47,7 +49,7 @@ function switchDrawer() {
                     Logout
                 </v-btn>
                 <template v-else>
-                    <v-btn block class="black-btn mb-1" aria-label="Logout">
+                    <v-btn block class="black-btn mb-1" aria-label="Login" to="/login">
                         Login
                     </v-btn>
                     <v-btn block class="black-btn" aria-label="Sign Up">
