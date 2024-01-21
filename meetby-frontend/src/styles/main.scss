@@ -4,23 +4,27 @@ $defaultFont: Roboto, sans-serif;
     $body-font-family: $defaultFont
 );
 
-.black-btn {
+@mixin btn($color, $bg-color) {
     @extend .font-weight-bold;
-    color: rgb(var(--v-theme-paletteWhite));
-    background: rgb(var(--v-theme-paletteBlack));
+    @extend .text-subtitle-1;
     padding: 25px 0px;
+    font-size: 1.1em;
+    color: rgb(var($color));
+    background: rgb(var($bg-color));
+}
+
+.black-btn {    
+    @include btn(--v-theme-paletteWhite, --v-theme-paletteBlack)
 }
 
 .blue-btn {
-    @extend .font-weight-bold;
-    color: rgb(var(--v-theme-paletteWhite));
-    background: rgb(var(--v-theme-paletteBlue));
-    padding: 25px 0px;
+    @include btn(--v-theme-paletteWhite, --v-theme-paletteBlue)
 }
 
 .red-btn {
-    @extend .font-weight-bold;
-    color: rgb(var(--v-theme-paletteWhite));
-    background: rgb(var(--v-theme-paletteRed));
-    padding: 25px 0px;
+    @include btn(--v-theme-paletteWhite, --v-theme-paletteRed)
+}
+
+.main-title {
+    font-size: 1.8em;
 }
