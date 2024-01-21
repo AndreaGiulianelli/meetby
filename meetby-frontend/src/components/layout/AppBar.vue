@@ -52,7 +52,7 @@ function switchDrawer() {
                     <v-btn block class="black-btn mb-1" aria-label="Login" to="/login">
                         Login
                     </v-btn>
-                    <v-btn block class="black-btn" aria-label="Sign Up">
+                    <v-btn block class="black-btn" aria-label="Sign Up" to="/signup">
                         Sign Up
                     </v-btn>
                 </template>
