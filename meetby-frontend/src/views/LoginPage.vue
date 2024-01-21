@@ -1,5 +1,9 @@
 <script setup>
 import { ref } from 'vue'
+import { useRouter } from 'vue-router'
+import { useAuthStore } from '@/stores/auth.js'
+
+const router = useRouter()
 
 const isFormValid = ref(false)
 
@@ -7,6 +11,8 @@ const email = ref('')
 const password = ref('')
 const showLoginError = ref()
 const showPassword = ref(false)
+
+const store = useAuthStore()
 
 const passwordRules = [
     value => {
@@ -26,9 +32,15 @@ const emailRules = [
     },
 ]
 
-function login() {
+async function login() {
     if (isFormValid.value) {
-        // TODO: implement
+        const logged = await store.login(email.value, password.value)
+        if (logged) {
+            router.push({ name: "home" })
+            showLoginError.value = false
+        } else {
+            showLoginError.value = true
+        }
     }    
 }
 
