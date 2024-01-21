@@ -21,7 +21,7 @@ const routes = [
     name: 'signup',
     component: SignUpPage
   },
-  { path: '/:pathMatch(.*)*', name: 'not-found', component: NotFound },
+  { path: '/:pathMatch(.*)*', name: 'notound', component: NotFound },
 ]
 
 const router = createRouter({
@@ -29,7 +29,7 @@ const router = createRouter({
   routes,
 })
 
-router.beforeEach((to, _) => {
+router.beforeEach((to) => {
   const store = useAuthStore()
   if (to.meta.requiresAuth && !store.isLoggedIn) {
     return { name: "login" }
