@@ -1,9 +1,12 @@
 <script setup>
 import { ref } from 'vue'
 
+const isFormValid = ref(false)
+
 const email = ref('')
 const password = ref('')
 const showLoginError = ref()
+const showPassword = ref(false)
 
 const passwordRules = [
     value => {
@@ -24,7 +27,9 @@ const emailRules = [
 ]
 
 function login() {
-    // TODO: implement
+    if (isFormValid.value) {
+        // TODO: implement
+    }    
 }
 
 </script>
@@ -43,12 +48,13 @@ function login() {
     <v-row>
         <v-spacer></v-spacer>
         <v-col cols="11" md="4" lg="3">
-            <v-form @submit.prevent="login">
+            <v-form v-model="isFormValid" @submit.prevent="login">
                 <v-container>
                     <v-row>
                         <v-col cols="12">
                             <v-text-field :rules="emailRules" bg-color="paletteGrey" v-model="email" label="Email" color="black" type="email" autocomplete="true" required/>
-                            <v-text-field :rules="passwordRules" bg-color="paletteGrey" v-model="password" label="Password" type="password" color="black" required />
+                            <v-text-field :rules="passwordRules" bg-color="paletteGrey" v-model="password" label="Password" :type="showPassword ? 'text' : 'password'" color="black" required 
+                                @click:append-inner="showPassword = !showPassword" :append-inner-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'" />
                             <div class="font-weight-bold text-paletteRed" v-if="showLoginError">Email or Password are incorrect</div>
                         </v-col>
                         <v-col cols="12" class="mt-3">
