@@ -3,6 +3,7 @@ import { useAuthStore } from '@/stores/auth.js'
 import HomePage from '@/views/HomePage.vue'
 import LoginPage from '@/views/LoginPage.vue'
 import SignUpPage from '@/views/SignUpPage.vue'
+import MeetsPage from '@/views/MeetsPage.vue'
 import NotFound from '@/views/NotFound.vue'
 
 const routes = [
@@ -21,6 +22,12 @@ const routes = [
     name: 'signup',
     component: SignUpPage
   },
+  {
+    path: '/meets',
+    name: 'meets',
+    component: MeetsPage,
+    meta: { requiresAuth: true },
+  },
   { path: '/:pathMatch(.*)*', name: 'notound', component: NotFound },
 ]
 
@@ -34,7 +41,7 @@ router.beforeEach((to) => {
   if (to.meta.requiresAuth && !store.isLoggedIn) {
     return { name: "login" }
   } else if (to.name != "not-found" && !to.meta.requiresAuth && store.isLoggedIn) {
-    // TODO: return route of my meets
+    return { name: "meets" }
   }
 })
 
