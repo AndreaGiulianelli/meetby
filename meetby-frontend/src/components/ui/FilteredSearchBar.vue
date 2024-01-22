@@ -28,9 +28,10 @@ watchEffect(() => {
             </v-col>
             <v-col cols="8" class="pl-2">
                 <v-text-field 
+                    clearable
                     label="Search"
                     variant="solo-filled"
-                    append-inner-icon="mdi-magnify"
+                    prepend-inner-icon="mdi-magnify"
                     bg-color="paletteGrey"
                     v-model="search"
                     type="text"
