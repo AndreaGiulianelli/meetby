@@ -54,5 +54,5 @@ exports.login = asyncController(async (req, res) => {
     }
 
     const token = generateToken(user._id)
-    res.status(200).json({ accessToken: token })
+    res.status(200).json({ userId: user._id, accessToken: token })
 })
