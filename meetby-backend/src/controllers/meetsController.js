@@ -111,6 +111,9 @@ exports.getAllMeets = asyncController(async (req, res) => {
                 'creationDate': 1,
                 'plannedDateTime': 1,
             }
+        },
+        {
+            $unwind: "$meetCreator"
         }
     ]
 
