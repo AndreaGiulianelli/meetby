@@ -11,6 +11,7 @@ export const useAuthStore = defineStore('auth', () => {
         const response = await authService.login(email, password)
         if (response) {
             authToken.value = response
+            localStorage.setItem("authToken", response)
             return true
         }
         return false
@@ -18,7 +19,14 @@ export const useAuthStore = defineStore('auth', () => {
 
     function logout() {
         authToken.value = null
+        localStorage.removeItem("authToken")
     }
 
-    return { authToken, isLoggedIn, login, logout }
+    function initStore() {
+        if (localStorage.getItem("authToken")) {
+            authToken.value = localStorage.getItem("authToken")
+        }
+    }
+
+    return { authToken, isLoggedIn, login, logout, initStore }
 })
