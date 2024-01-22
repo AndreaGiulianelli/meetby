@@ -4,7 +4,7 @@ class AuthorizationService {
     async login(email, password) {
         try {
             const response = await httpClient.post("/login", { email: email, password: password })
-            return response.data.accessToken
+            return response.data
         } catch (error) {
             return false    
         }
