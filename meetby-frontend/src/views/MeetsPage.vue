@@ -1,5 +1,6 @@
 <script setup>
 import { ref, watchEffect, } from 'vue'
+import { useAuthStore } from '@/stores/auth.js'
 import FilteredSearchBar from '@/components/ui/FilteredSearchBar.vue'
 import MeetItem from '@/components/meet/MeetItem.vue'
 import MeetsService from '@/services/MeetsService.js'
@@ -7,6 +8,8 @@ import MeetsService from '@/services/MeetsService.js'
 const tab = ref('')
 const meets = ref([])
 const search = ref('')
+
+const store = useAuthStore()
 
 watchEffect(() => {
     setMeets(search.value.filter, (meet) => meet.title.toLowerCase().includes(search.value.search.toLowerCase()))
@@ -40,6 +43,7 @@ function setMeets(status, filter) {
                         :creator="meet.meetCreator.name + ' ' + meet.meetCreator.surname"
                         :partecipants="meet.invitedUsers.length + meet.invitedGuests.length + 1"
                         :status="meet.plannedDateTime ? 'Planned' : 'Planning'"
+                        :editable="meet.meetCreator._id === store.userId"
                     />
 
                     <v-btn class="fab" icon="mdi-plus" size="large" color="paletteBlack" elevation="2" />
