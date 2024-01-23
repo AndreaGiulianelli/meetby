@@ -49,11 +49,11 @@ exports.updateMeet = asyncController(async (req, res) => {
         return res.status(404).send()
     }
 
-    // If the old meet proposed availabilities have been modified, then the users' and guests' availabilities will be restored
-    const oldMeetAvailabilities = oldMeet.proposedAvailabilities.map(proposedAvailability => proposedAvailability.availability)
-    const areProposedAvailabilitiesUpdated = !ignoreOrderCompare(oldMeetAvailabilities, req.body.proposedAvailabilities)
-
     try {
+        // If the old meet proposed availabilities have been modified, then the users' and guests' availabilities will be restored
+        const oldMeetAvailabilities = oldMeet.proposedAvailabilities.map(proposedAvailability => proposedAvailability.availability)
+        const areProposedAvailabilitiesUpdated = !ignoreOrderCompare(oldMeetAvailabilities, req.body.proposedAvailabilities)
+
         await Meet.findByIdAndUpdate(req.params.meetId, {
             title: req.body.title,
             duration: req.body.duration,
@@ -167,6 +167,9 @@ exports.getMeet = asyncController(async (req, res) => {
                 'plannedDateTime': 1,
                 'proposedAvailabilities': 1,
             }
+        },
+        {
+            $unwind: "$meetCreator"
         }
     ]
 
@@ -175,7 +178,7 @@ exports.getMeet = asyncController(async (req, res) => {
         return res.status(404).send()
     }
 
-    return res.status(200).json(meet)
+    return res.status(200).json(meet[0])
 })
 
 exports.deleteMeet = asyncController(async (req, res) => {
