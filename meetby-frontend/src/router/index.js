@@ -4,6 +4,7 @@ import HomePage from '@/views/HomePage.vue'
 import LoginPage from '@/views/LoginPage.vue'
 import SignUpPage from '@/views/SignUpPage.vue'
 import MeetsPage from '@/views/MeetsPage.vue'
+import MeetDetailPage from '@/views/MeetDetailPage.vue'
 import NotFound from '@/views/NotFound.vue'
 
 const routes = [
@@ -26,6 +27,12 @@ const routes = [
     path: '/meets',
     name: 'meets',
     component: MeetsPage,
+    meta: { requiresAuth: true },
+  },
+  {
+    path: '/meets/:meetId',
+    name: 'meetDetail',
+    component: MeetDetailPage,
     meta: { requiresAuth: true },
   },
   { path: '/:pathMatch(.*)*', name: 'notound', component: NotFound },
