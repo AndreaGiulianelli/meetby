@@ -13,7 +13,8 @@ const items = [
     {
         title: 'My meets',
         value: 'meets',
-        icon: 'mdi-view-dashboard'
+        icon: 'mdi-view-dashboard',
+        to: '/meets',
     }
 ]
 
@@ -44,6 +45,7 @@ function logout() {
                 :prepend-icon="item.icon"
                 :value="item.value"
                 :key="item.value"
+                :to="item.to"
                 @click.prevent="switchDrawer">
                 <v-list-item-title class="drawerItem">{{ item.title }}</v-list-item-title>
             </v-list-item>
