@@ -97,7 +97,7 @@ async function signup() {
     <v-row>
         <v-col cols="12" class="mb-2">
             <div class="px-6 pt-5 text-center">
-                <p class="main-title font-weight-black mb-2">Create your meetby account</p>
+                <h1 class="mb-2">Create your meetby account</h1>
             </div>
         </v-col>
     </v-row>

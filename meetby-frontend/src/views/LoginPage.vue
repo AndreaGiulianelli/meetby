@@ -50,7 +50,7 @@ async function login() {
     <v-row>
         <v-col cols="12" class="mb-2">
             <div class="px-6 pt-5 text-center">
-                <p class="main-title font-weight-black mb-2">Hey! Nice to see you again</p>
+                <h1 class="mb-2">Hey! Nice to see you again</h1>
                 <p class="px-5">
                     Login to start <i>meetby</i> everybody
                 </p>
