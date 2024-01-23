@@ -46,7 +46,7 @@ function setMeets(status, filter) {
                         :editable="meet.meetCreator._id === store.userId"
                     />
 
-                    <v-btn class="fab" icon="mdi-plus" size="large" color="paletteBlack" elevation="2" />
+                    <v-btn class="fab" icon="mdi-plus" size="large" color="paletteBlack" elevation="2" to="/meets/new" />
                 </v-window-item>
                 <v-window-item value="calendar" class="pt-5">
                     Calendar
