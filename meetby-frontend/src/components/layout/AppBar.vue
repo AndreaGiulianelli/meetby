@@ -46,7 +46,7 @@ function logout() {
                 :value="item.value"
                 :key="item.value"
                 :to="item.to"
-                @click.prevent="switchDrawer">
+                @click="switchDrawer">
                 <v-list-item-title class="drawerItem">{{ item.title }}</v-list-item-title>
             </v-list-item>
         </v-list>
