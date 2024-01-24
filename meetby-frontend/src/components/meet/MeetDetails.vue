@@ -23,6 +23,10 @@ const props = defineProps({
 const leaveDialog = ref(false)
 const newAvailabilities = ref(props.availabilities.filter(availability => availability.availableUsers.includes(store.userId)).map(availability => availability.availability))
 
+function getDisplayDateTime(datetime) {
+    const dateAndTime = datetime.split('T')
+    return dateAndTime[0] + ' @ ' + dateAndTime[1]
+}
 </script>
 
 <template>
@@ -31,9 +35,9 @@ const newAvailabilities = ref(props.availabilities.filter(availability => availa
             <v-col cols="12">
                 <h2>Description</h2>
                 <p class="mb-1"><span class="font-weight-bold text-paletteBlue">Duration: </span>{{ duration }} min</p>
-                <p class="mb-1"><span class="font-weight-bold text-paletteBlue">Place: </span>{{ place }}</p>
-                <span class="font-weight-bold text-paletteBlue">Description: </span>
-                <p class="mb-1">{{ description }}</p>
+                <p class="mb-1"><span class="font-weight-bold text-paletteBlue" v-if="place">Place: </span>{{ place }}</p>
+                <span class="font-weight-bold text-paletteBlue" v-if="description">Description: </span>
+                <p class="mb-1" v-if="description">{{ description }}</p>
                 <p class="mb-1"><span class="font-weight-bold text-paletteBlue" v-if="meetingUrl">Meeting url: </span>{{ meetingUrl }}</p>
                 <p class="mb-1"><span class="font-weight-bold text-paletteBlue" v-if="meetDate">Meet date: </span>{{ meetDate }}</p>
             </v-col>
@@ -66,7 +70,7 @@ const newAvailabilities = ref(props.availabilities.filter(availability => availa
                         class="px-1 py-2 bg-paletteGrey rounded mb-1"
                     >
                         <v-col cols="10" class="pt-4">
-                            <span class="font-weight-bold">{{ availability.availability.split('/')[0] }}</span>
+                            <span class="font-weight-bold">{{ getDisplayDateTime(availability.availability.split('/')[0]) }}</span>
                             <p>Selected by:</p>
                             <ol class="px-8">
                                 <li
@@ -114,11 +118,13 @@ const newAvailabilities = ref(props.availabilities.filter(availability => availa
                             <v-btn
                                 color="paletteBlack"
                                 variant="text"
+                                aria-label="No"
                                 @click="leaveDialog = false"
                             >No</v-btn>
                             <v-btn
                                 color="paletteRed"
                                 variant="text"
+                                aria-label="Yes"
                                 @click="MeetsService.leaveMeeting(id).then(res => { leaveDialog = false; router.back()})"
                             >Yes</v-btn>
                         </v-card-actions>
