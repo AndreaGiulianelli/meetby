@@ -10,7 +10,7 @@ exports.createNewMeet = asyncController(async (req, res) => {
     if (req.body.invitedUsers) {
         req.body.invitedUsers.forEach(async invitedUserId => {
             if (!await User.findById(invitedUserId)) {
-                return res.status(400).json({ message: "Invalid data provided" })
+                return res.status(400).json({ message: "Invalid data provided - one of the user is not registered" })
             }
         });
     }
@@ -31,6 +31,7 @@ exports.createNewMeet = asyncController(async (req, res) => {
         await meet.save()
         return res.status(201).send()
     } catch(err) {
+        console.log(err)
         return res.status(400).json({ message: "Invalid data provided" })
     }
 })
@@ -70,6 +71,7 @@ exports.updateMeet = asyncController(async (req, res) => {
         
         return res.status(204).send()
     } catch(err) {
+        console.log(err)
         return res.status(400).json({ message: "Invalid data provided" })
     }
 })
