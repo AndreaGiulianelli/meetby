@@ -63,7 +63,7 @@ const emailRules = [
         return 'E-mail is requred.'
     },
     value => {
-        if (/.+@.+\..+/.test(value)) return true
+        if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(value)) return true
         return 'E-mail must be valid.'
     },
 ]
