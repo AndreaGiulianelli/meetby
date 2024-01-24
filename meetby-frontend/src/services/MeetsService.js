@@ -23,6 +23,11 @@ class MeetsService {
         }
     }
 
+    async create(meet) {
+        const response = await httpClient.post('/meets', meet)
+        return response.status === 201
+    }
+
     async update(meetId, updateBody) {
         const response = await httpClient.put(`/meets/${meetId}`, updateBody)
         return response.status === 204
