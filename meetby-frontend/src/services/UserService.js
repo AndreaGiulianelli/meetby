@@ -3,7 +3,7 @@ import httpClient from './http/httpClient'
 class UserService {
     async getUsersStarting(startWith) {
         const response = await httpClient.get("/users", {
-            params: { startsWith: startWith }
+            params: { 'startsWith': startWith }
         })
         if (response.status === 200) {
             return response.data
