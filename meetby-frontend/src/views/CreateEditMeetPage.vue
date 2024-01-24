@@ -1,10 +1,26 @@
 <script setup>
 import { ref } from 'vue'
+import { useRouter } from 'vue-router'
+import { parse, toSeconds } from 'iso8601-duration'
+import DeletableEntry from '@/components/ui/DeletableEntry.vue'
+import FutureDateTimePicker from '@/components/ui/FutureDateTimePicker.vue'
+import SearchUser from '@/components/user/SearchUser.vue'
+import MeetsService from '@/services/MeetsService.js'
 
+const router = useRouter()
+
+const isFormValid = ref(false)
+
+const title = ref()
+const durationValue = ref()
 const durationUnit = ref()
+const place = ref()
+const description = ref()
 const hasOnlineMeeting = ref(false)
-const availabilities = ref()
-const people = ref()
+const meetingUrl = ref()
+const availabilities = ref([])
+const invitedGuests = ref([])
+const invitedUsers = ref([])
 
 const requiredField = [
     value => {
@@ -13,8 +29,56 @@ const requiredField = [
     }
 ]
 
-function submit() {
+const urlRules = [
+    value => {
+        if (/(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-/]))?/.test(value)) return true
+        return 'Url must be valid'
+    }
+]
 
+// Add Person dialog
+const addPersonDialog = ref(false)
+const wantToAddGuest = ref(false)
+const guestEmail = ref()
+const emailRules = [
+    value => {
+        if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(value)) return true
+        return 'E-mail must be valid.'
+    },
+]
+
+
+
+function getDisplayDateTime(datetime) {
+    const dateAndTime = datetime.split('T')
+    return dateAndTime[0] + ' @ ' + dateAndTime[1]
+}
+
+async function submit() {
+    if (isFormValid.value) {
+        const duration = `PT${durationValue.value}${durationUnit.value == 'min' ? 'M' : 'H'}`
+        const isoAvailabilities = availabilities.value.map(availability => {
+            const endDate = new Date(availability.getTime())
+            endDate.setSeconds(endDate.getSeconds() + toSeconds(parse(duration)))
+            return `${availability.toISOString().split('.')[0]+"Z"}/${endDate.toISOString().split('.')[0]+"Z"}`
+        })
+        const newMeet = {
+            title: title.value,
+            duration: duration,
+            place: place.value,
+            description: description.value,
+            meetingUrl: meetingUrl.value,
+            proposedAvailabilities: isoAvailabilities,
+            invitedUsers: invitedUsers.value.map(invitedUser => invitedUser._id),
+            invitedGuests: invitedGuests.value.map(guest => guest),
+        }
+        Object.keys(newMeet).forEach(key => newMeet[key] === undefined && delete newMeet[key])
+        const response = await MeetsService.create(newMeet)
+
+        if (response) {
+            router.replace({ name: 'meets' })
+        }
+    }    
 }
 
 </script>
@@ -23,7 +87,7 @@ function submit() {
     <v-row>
         <v-spacer></v-spacer>
         <v-col cols="12" md="6" lg="5">
-            <v-form @submit.prevent="submit">
+            <v-form v-model="isFormValid" @submit.prevent="submit">
                 <v-container>
                     <v-row>
                         <v-col cols="12">
@@ -60,9 +124,8 @@ function submit() {
                                 color="paletteBlue"
                                 v-model="hasOnlineMeeting"
                                 hide-details="auto"
-                                class=""
                             ></v-switch>
-                            <v-text-field v-if="hasOnlineMeeting" class="mb-3" hide-details="auto" bg-color="paletteGrey" v-model="meetingUrl" label="Meeting url" color="black" type="text"/>
+                            <v-text-field v-if="hasOnlineMeeting" :rules="urlRules" class="mb-3" hide-details="auto" bg-color="paletteGrey" v-model="meetingUrl" label="Meeting url" color="black" type="text"/>
                         </v-col>
 
                         <v-col cols="12">
@@ -72,7 +135,20 @@ function submit() {
                                         <h2 class="text-paletteBlue">Availabilities</h2>
                                     </v-col>
                                     <v-col cols="4">
-                                        <v-btn class="black-btn py-3 px-2" block aria-label="Add availability">Add</v-btn>
+                                        <FutureDateTimePicker @new-date="(date) => availabilities.push(date)"> 
+                                            <v-btn class="black-btn py-3 px-2" block aria-label="Add availability">Add</v-btn>
+                                        </FutureDateTimePicker>
+                                    </v-col>
+                                </v-row>
+                                <v-row>
+                                    <v-col cols="12">
+                                        <DeletableEntry
+                                            v-for="availability in availabilities"
+                                            :key="availability.toISOString()"
+                                            :text="getDisplayDateTime(availability.toISOString())"
+                                            @deleted="availabilities.splice(availabilities.indexOf(availability), 1)"
+                                            class="mb-2"
+                                        />
                                     </v-col>
                                 </v-row>
                             </v-container>
@@ -85,10 +161,67 @@ function submit() {
                                         <h2 class="text-paletteBlue">People</h2>
                                     </v-col>
                                     <v-col cols="4">
-                                        <v-btn class="black-btn py-3 px-2" block aria-label="Add person">Add</v-btn>
+                                        <v-dialog v-model="addPersonDialog">
+                                            <template v-slot:activator="{ props }">
+                                                <v-btn v-bind="props" class="black-btn py-3 px-2" block aria-label="Add person">Add</v-btn>
+                                            </template>
+
+                                            <v-card>
+                                                <v-card-title class="pb-0 font-weight-bold">
+                                                    Select a person to add
+                                                </v-card-title>
+                                                <v-card-text class="pt-0">
+                                                    <v-switch 
+                                                        label="Add guest" 
+                                                        inset
+                                                        color="paletteBlue"
+                                                        v-model="wantToAddGuest"
+                                                        hide-details="auto"
+                                                    ></v-switch>
+
+                                                    <v-text-field :rules="emailRules" clearable v-if="wantToAddGuest" class="mb-3" hide-details="auto" bg-color="paletteGrey" v-model="guestEmail" label="Guest email" color="black" type="text"/>
+                                                    <SearchUser v-else @searched-user="(user) => {addPersonDialog = false; invitedUsers.push(user)}" />
+
+                                                </v-card-text>
+                                                <v-card-actions v-if="wantToAddGuest">
+                                                    <v-spacer></v-spacer>
+                                                    <v-btn
+                                                        color="paletteBlue"
+                                                        variant="text"
+                                                        @click="{addPersonDialog = false; invitedGuests.push(guestEmail); guestEmail = ''}"
+                                                        aria-label="Add guest"
+                                                    >Add guest</v-btn>
+                                                </v-card-actions>
+                                            </v-card>
+                                        </v-dialog>
+                                    </v-col>
+                                </v-row>
+                                <v-row>
+                                    <v-col cols="12">
+                                        <DeletableEntry
+                                            v-for="user in invitedUsers"
+                                            :key="user._id"
+                                            :text="`${user.name} ${user.surname}`"
+                                            @deleted="invitedUsers.splice(invitedUsers.map(u => u._id).indexOf(user._id), 1)"
+                                            class="mb-2"
+                                        />
+                                        <DeletableEntry
+                                            v-for="guest in invitedGuests"
+                                            :key="guest"
+                                            :text="guest"
+                                            @deleted="invitedGuests.splice(invitedGuests.indexOf(guest), 1)"
+                                            class="mb-2"
+                                        />
                                     </v-col>
                                 </v-row>
                             </v-container>
+                        </v-col>
+                    </v-row>
+                    <v-row>
+                        <v-col cols="12" class="mt-3">
+                            <v-btn block type="submit" class="black-btn" aria-label="Create">
+                                Create
+                            </v-btn>
                         </v-col>
                     </v-row>
                 </v-container>
