@@ -9,7 +9,7 @@ exports.isMeetCreator = (req, res, next) => {
             return res.status(401).json({ message: "You are not the creator of the meet" })
         }
         next()
-    })
+    }).catch(() => res.sendStatus(404))
 }
 
 exports.isInvited = (req, res, next) => {
@@ -26,7 +26,7 @@ exports.isInvited = (req, res, next) => {
             return res.status(401).json({ message: "You are not invited to the meet" })
         }
         next()
-    })
+    }).catch(() => res.sendStatus(404))
 }
 
 exports.isMeetInPlanning = (req, res, next) => {
@@ -38,7 +38,7 @@ exports.isMeetInPlanning = (req, res, next) => {
             return res.status(409).json({ message: "The meet is not in planning" })
         }
         next()
-    })
+    }).catch(() => res.sendStatus(404))
 }
 
 exports.isMeetNotConcluded = (req, res, next) => {
@@ -50,5 +50,5 @@ exports.isMeetNotConcluded = (req, res, next) => {
             return res.status(409).json({ message: "The meeting is already over" })
         }
         next()
-    })
+    }).catch(() => res.sendStatus(404))
 }
