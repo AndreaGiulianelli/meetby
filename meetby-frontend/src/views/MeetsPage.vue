@@ -1,15 +1,19 @@
 <script setup>
 import { ref, watchEffect, } from 'vue'
+import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth.js'
-import { getMeetStatus } from '@/utils/utils'
+import { getEndDate, getMeetStatus } from '@/utils/utils'
 import FilteredSearchBar from '@/components/ui/FilteredSearchBar.vue'
 import MeetItem from '@/components/meet/MeetItem.vue'
+import { Qalendar } from "qalendar"
+import "qalendar/dist/style.css";
 import MeetsService from '@/services/MeetsService.js'
 
 const tab = ref('')
-const meets = ref([])
+const meets = ref()
 const search = ref('')
 
+const router = useRouter()
 const store = useAuthStore()
 
 watchEffect(() => {
@@ -20,6 +24,14 @@ setMeets()
 
 function setMeets(status, filter) {
     MeetsService.getAll(status).then(response => { meets.value = response.filter((value) => filter ? filter(value) : true) })
+}
+
+function leadingZero(number) {
+    return number > 10 ? number : '0' + `${number}`
+}
+
+function adaptDateToQalendar(isoDate) {
+    return `${isoDate.getFullYear()}-${leadingZero(isoDate.getMonth() + 1)}-${leadingZero(isoDate.getDate())} ${leadingZero(isoDate.getHours())}:${ leadingZero(isoDate.getMinutes())}`
 }
 </script>
 
@@ -49,8 +61,30 @@ function setMeets(status, filter) {
 
                     <v-btn class="fab" aria-label="Create a meet" aria-hidden="false" icon="mdi-plus" size="large" color="paletteBlack" elevation="2" to="/meets/new" />
                 </v-window-item>
-                <v-window-item value="calendar" class="pt-5">
-                    Calendar
+                <v-window-item value="calendar" class="pt-5 is-light-mode">
+                    <Qalendar
+                        :selectedDate="new Date()"
+                        :events="meets.filter((meet) => getMeetStatus(meet) != 'Planning').map((meet) => {
+                            return {
+                                title: meet.title,
+                                time: { start: adaptDateToQalendar(new Date(meet.plannedDateTime)), end: adaptDateToQalendar(getEndDate(new Date(meet.plannedDateTime), meet.duration)) },
+                                color: 'blue',
+                                isEditable: false,
+                                id: meet._id,
+                            }
+                        })"
+                        :config="{
+                            locale: 'en-US',
+                            week: {
+                                startsOn: 'monday'
+                            },
+                            style: {
+                                fontFamily: ['Roboto', 'sans-serif'],
+                            },
+                            defaultMode: 'month',
+                        }"
+                        @event-was-clicked="(event) => router.push({ name: 'meetDetail', params: { meetId: event.clickedEvent.id } })"
+                    />
                 </v-window-item>
             </v-window>
         </v-col>
