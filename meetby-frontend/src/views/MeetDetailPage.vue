@@ -37,7 +37,7 @@ MeetsService.get(route.params.meetId).then(response => meet.value = response )
                             :place="meet.place"
                             :description="meet.description"
                             :meeting-url="meet.meetingUrl"
-                            :meet-date="meet.plannedDateTime"
+                            :meet-date="meet.plannedDateTime ? new Date(meet.plannedDateTime) : undefined"
                             :guests="meet.invitedGuests"
                             :users="meet.invitedUsers"
                             :availabilities='meet.proposedAvailabilities'

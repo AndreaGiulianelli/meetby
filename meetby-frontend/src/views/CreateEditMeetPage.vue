@@ -1,8 +1,7 @@
 <script setup>
 import { ref } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
-import { parse, toSeconds } from 'iso8601-duration'
-import { getDisplayDateTime, getDurationUnit, getDurationValue } from '@/utils/utils.js'
+import { getDurationUnit, getDurationValue, getEndDate } from '@/utils/utils.js'
 import DeletableEntry from '@/components/ui/DeletableEntry.vue'
 import FutureDateTimePicker from '@/components/ui/FutureDateTimePicker.vue'
 import SearchUser from '@/components/user/SearchUser.vue'
@@ -73,8 +72,7 @@ async function submit() {
     if (isFormValid.value) {
         const duration = `PT${durationValue.value}${durationUnit.value == 'min' ? 'M' : 'H'}`
         const isoAvailabilities = availabilities.value.map(availability => {
-            const endDate = new Date(availability.getTime())
-            endDate.setSeconds(endDate.getSeconds() + toSeconds(parse(duration)))
+            const endDate = getEndDate(availability, duration)
             return `${availability.toISOString().split('.')[0]+"Z"}/${endDate.toISOString().split('.')[0]+"Z"}`
         })
         const newMeet = {
@@ -166,7 +164,7 @@ async function submit() {
                                         <DeletableEntry
                                             v-for="availability in availabilities"
                                             :key="availability.toISOString()"
-                                            :text="getDisplayDateTime(availability.toISOString())"
+                                            :text="availability.toLocaleString()"
                                             @deleted="availabilities.splice(availabilities.indexOf(availability), 1)"
                                             class="mb-2"
                                         />

@@ -2,7 +2,6 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth.js'
-import { getDisplayDateTime } from '@/utils/utils.js'
 import MeetsService from '@/services/MeetsService.js'
 
 const router = useRouter()
@@ -15,7 +14,7 @@ const props = defineProps({
     place: String,
     description: String,
     meetingUrl: String,
-    meetDate: String,
+    meetDate: Object,
     guests: Object,
     users: Object,
     availabilities: Object,
@@ -36,11 +35,11 @@ const newAvailabilities = ref(props.availabilities.filter(availability => availa
             <v-col cols="12">
                 <h2>Description</h2>
                 <p class="mb-1"><span class="font-weight-bold text-paletteBlue">Duration: </span>{{ duration }} {{ durationUnit }}</p>
-                <p class="mb-1"><span class="font-weight-bold text-paletteBlue" v-if="place">Place: </span>{{ place }}</p>
+                <p class="mb-1" v-if="place"><span class="font-weight-bold text-paletteBlue">Place: </span>{{ place }}</p>
                 <span class="font-weight-bold text-paletteBlue" v-if="description">Description: </span>
                 <p class="mb-1" v-if="description">{{ description }}</p>
-                <p class="mb-1"><span class="font-weight-bold text-paletteBlue" v-if="meetingUrl">Meeting url: </span>{{ meetingUrl }}</p>
-                <p class="mb-1"><span class="font-weight-bold text-paletteBlue" v-if="meetDate">Meet date: </span>{{ meetDate }}</p>
+                <p class="mb-1" v-if="meetingUrl"><span class="font-weight-bold text-paletteBlue">Meeting url: </span>{{ meetingUrl }}</p>
+                <p class="mb-1" v-if="meetDate"><span class="font-weight-bold text-paletteBlue">Meet date: </span>{{ meetDate.toLocaleString() }}</p>
             </v-col>
         </v-row>
 
@@ -71,7 +70,7 @@ const newAvailabilities = ref(props.availabilities.filter(availability => availa
                         class="px-1 py-2 bg-paletteGrey rounded mb-1"
                     >
                         <v-col cols="10" class="pt-4">
-                            <span class="font-weight-bold">{{ getDisplayDateTime(availability.availability.split('/')[0]) }}</span>
+                            <span class="font-weight-bold">{{ new Date(availability.availability.split('/')[0]).toLocaleString() }}</span>
                             <p>Selected by:</p>
                             <ol class="px-8">
                                 <li
@@ -102,7 +101,7 @@ const newAvailabilities = ref(props.availabilities.filter(availability => availa
                         Save
                     </v-btn>
                 </v-col>
-            <v-col cols="12" md="6" class="pt-2 pt-md-3" v-if="creatorId != store.userId && (!meetDate || new Date(meetDate).getTime() > new Date().getTime())">
+            <v-col cols="12" md="6" class="pt-2 pt-md-3" v-if="creatorId != store.userId && (!meetDate || meetDate.getTime() > new Date().getTime())">
                 <v-dialog width="auto" persistent v-model="leaveDialog">
                     <template v-slot:activator="{ props }">
                         <v-btn block class="red-btn" aria-label="Leave meeting" v-bind="props">
@@ -132,7 +131,7 @@ const newAvailabilities = ref(props.availabilities.filter(availability => availa
                     </v-card>
                 </v-dialog>
             </v-col>
-            <v-col cols="12" md="6" class="pt-2 pt-md-3" v-if="creatorId == store.userId && (!meetDate || new Date(meetDate).getTime() > new Date().getTime())">
+            <v-col cols="12" md="6" class="pt-2 pt-md-3" v-if="creatorId == store.userId && (!meetDate || meetDate.getTime() > new Date().getTime())">
                 <v-dialog width="auto" persistent v-model="deleteDialog">
                     <template v-slot:activator="{ props }">
                         <v-btn block class="red-btn" aria-label="Delete meeting" v-bind="props">
