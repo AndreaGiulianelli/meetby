@@ -40,7 +40,7 @@ const routes = [
     path: '/meets/:meetId',
     name: 'meetDetail',
     component: MeetDetailPage,
-    meta: { requiresAuth: true },
+    meta: { requiresAuthOrGuest: true },
   },
   {
     path: '/meets/:meetId/edit',
@@ -48,7 +48,7 @@ const routes = [
     component: CreateEditMeetPage,
     meta: { requiresAuth: true },
   },
-  { path: '/:pathMatch(.*)*', name: 'notound', component: NotFound },
+  { path: '/:pathMatch(.*)*', name: 'not-found', component: NotFound },
 ]
 
 const router = createRouter({
@@ -58,9 +58,11 @@ const router = createRouter({
 
 router.beforeEach((to) => {
   const store = useAuthStore()
-  if (to.meta.requiresAuth && !store.isLoggedIn) {
+  if (to.meta.requiresAuthOrGuest && !(store.isLoggedIn || to.query.guest)) {
     return { name: "login" }
-  } else if (to.name != "not-found" && !to.meta.requiresAuth && store.isLoggedIn) {
+  } else if (to.meta.requiresAuth && !store.isLoggedIn) {
+    return { name: "login" }
+  } else if (to.name != "not-found" && !to.meta.requiresAuth && !to.meta.requiresAuthOrGuest && store.isLoggedIn) {
     return { name: "meets" }
   }
 })
