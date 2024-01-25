@@ -1,6 +1,6 @@
 <script setup>
 import { ref } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
 import { parse, toSeconds } from 'iso8601-duration'
 import DeletableEntry from '@/components/ui/DeletableEntry.vue'
 import FutureDateTimePicker from '@/components/ui/FutureDateTimePicker.vue'
@@ -8,6 +8,7 @@ import SearchUser from '@/components/user/SearchUser.vue'
 import MeetsService from '@/services/MeetsService.js'
 
 const router = useRouter()
+const route = useRoute()
 
 const isFormValid = ref(false)
 
@@ -47,6 +48,25 @@ const emailRules = [
     },
 ]
 
+// Check if the page is in edit mode
+const isEdit = route.params.meetId ? true : false
+const meetIdToBeEdited = route.params.meetId
+
+if (isEdit) {
+    MeetsService.get(meetIdToBeEdited).then(currentMeet => {
+        title.value = currentMeet.title
+        durationUnit.value = currentMeet.duration.slice(-1) == 'M' ? 'min' : 'hour'
+        durationValue.value = toSeconds(parse(currentMeet.duration)) / (durationUnit.value == 'min' ? 60 : 3600)
+        place.value = currentMeet.place
+        description.value = currentMeet.description
+        hasOnlineMeeting.value = currentMeet.meetingUrl ? true : false
+        meetingUrl.value = currentMeet.meetingUrl
+        availabilities.value = currentMeet.proposedAvailabilities.map(availability => new Date(availability.availability.split('/')[0]))
+        invitedGuests.value = currentMeet.invitedGuests
+        invitedUsers.value = currentMeet.invitedUsers
+    })
+}
+
 
 
 function getDisplayDateTime(datetime) {
@@ -72,8 +92,12 @@ async function submit() {
             invitedUsers: invitedUsers.value.map(invitedUser => invitedUser._id),
             invitedGuests: invitedGuests.value.map(guest => guest),
         }
-        Object.keys(newMeet).forEach(key => newMeet[key] === undefined && delete newMeet[key])
-        const response = await MeetsService.create(newMeet)
+
+        if (!isEdit) {
+            Object.keys(newMeet).forEach(key => newMeet[key] === undefined && delete newMeet[key])
+        }
+
+        const response = isEdit ? await MeetsService.update(meetIdToBeEdited, newMeet) : await MeetsService.create(newMeet)
 
         if (response) {
             router.replace({ name: 'meets' })
@@ -91,7 +115,8 @@ async function submit() {
                 <v-container>
                     <v-row>
                         <v-col cols="12">
-                            <h1>Create a new meet</h1>
+                            <h1 v-if="!isEdit">Create a new meet</h1>
+                            <h1 v-else>Edit meet</h1>
                         </v-col>
                     </v-row>
                     <v-row>
@@ -123,6 +148,7 @@ async function submit() {
                                 inset
                                 color="paletteBlue"
                                 v-model="hasOnlineMeeting"
+                                @update:model-value="(switched) => { if (!switched) { meetingUrl = null } }"
                                 hide-details="auto"
                             ></v-switch>
                             <v-text-field v-if="hasOnlineMeeting" :rules="urlRules" class="mb-3" hide-details="auto" bg-color="paletteGrey" v-model="meetingUrl" label="Meeting url" color="black" type="text"/>
@@ -220,7 +246,8 @@ async function submit() {
                     <v-row>
                         <v-col cols="12" class="mt-3">
                             <v-btn block type="submit" class="black-btn" aria-label="Create">
-                                Create
+                                <span v-if="!isEdit">Create</span>
+                                <span v-else>Save</span>
                             </v-btn>
                         </v-col>
                     </v-row>
