@@ -2,7 +2,7 @@
 import { ref } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { parse, toSeconds } from 'iso8601-duration'
-import { getDisplayDateTime } from '@/utils/utils.js'
+import { getDisplayDateTime, getDurationUnit, getDurationValue } from '@/utils/utils.js'
 import DeletableEntry from '@/components/ui/DeletableEntry.vue'
 import FutureDateTimePicker from '@/components/ui/FutureDateTimePicker.vue'
 import SearchUser from '@/components/user/SearchUser.vue'
@@ -56,8 +56,8 @@ const meetIdToBeEdited = route.params.meetId
 if (isEdit) {
     MeetsService.get(meetIdToBeEdited).then(currentMeet => {
         title.value = currentMeet.title
-        durationUnit.value = currentMeet.duration.slice(-1) == 'M' ? 'min' : 'hour'
-        durationValue.value = toSeconds(parse(currentMeet.duration)) / (durationUnit.value == 'min' ? 60 : 3600)
+        durationUnit.value = getDurationUnit(currentMeet.duration)
+        durationValue.value = getDurationValue(currentMeet.duration)
         place.value = currentMeet.place
         description.value = currentMeet.description
         hasOnlineMeeting.value = currentMeet.meetingUrl ? true : false

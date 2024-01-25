@@ -1,10 +1,9 @@
 <script setup>
 import { ref } from 'vue'
 import { useRoute } from 'vue-router'
-import { parse, toSeconds } from 'iso8601-duration'
 import MeetDetails from '@/components/meet/MeetDetails.vue'
 import MeetsService from '@/services/MeetsService.js'
-import { getMeetStatus } from '@/utils/utils'
+import { getDurationUnit, getDurationValue, getMeetStatus } from '@/utils/utils'
 
 const route = useRoute()
 
@@ -33,8 +32,8 @@ MeetsService.get(route.params.meetId).then(response => meet.value = response )
                     <v-col cols="12">
                         <MeetDetails
                             :id="meet._id"
-                            :duration="toSeconds(parse(meet.duration)) / (meet.duration.slice(-1) == 'M' ? 60 : 3600)"
-                            :durationUnit="meet.duration.slice(-1) == 'M' ? 'min' : 'hour'"
+                            :duration="getDurationValue(meet.duration)"
+                            :durationUnit="getDurationUnit(meet.duration)"
                             :place="meet.place"
                             :description="meet.description"
                             :meeting-url="meet.meetingUrl"
