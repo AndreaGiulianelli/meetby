@@ -21,12 +21,18 @@ const props = defineProps({
     creatorId: String,
     creatorName: String,
     creatorSurname: String,
+    guest: String,
 })
 
 const leaveDialog = ref(false)
 const deleteDialog = ref(false)
-const newAvailabilities = ref(props.availabilities.filter(availability => availability.availableUsers.includes(store.userId)).map(availability => availability.availability))
+const newAvailabilities = ref()
 
+if (props.guest) {
+    newAvailabilities.value = props.availabilities.filter(availability => availability.availableGuests.includes(props.guest)).map(availability => availability.availability)
+} else {
+    newAvailabilities.value = props.availabilities.filter(availability => availability.availableUsers.includes(store.userId)).map(availability => availability.availability)
+}
 </script>
 
 <template>
@@ -97,7 +103,7 @@ const newAvailabilities = ref(props.availabilities.filter(availability => availa
         <v-row>
             <v-spacer></v-spacer>
                 <v-col cols="12" md="6" class="pb-0 pb-md-0" v-if="!meetDate">
-                    <v-btn block class="black-btn" aria-label="Save" @click="MeetsService.setPersonalAvailabilities(id, newAvailabilities).then(res => router.back())">
+                    <v-btn block class="black-btn" aria-label="Save" @click="MeetsService.setPersonalAvailabilities(id, newAvailabilities, guest).then(res => { if(!guest) { router.back() } else { router.go() } })">
                         Save
                     </v-btn>
                 </v-col>
@@ -125,7 +131,7 @@ const newAvailabilities = ref(props.availabilities.filter(availability => availa
                                 color="paletteRed"
                                 variant="text"
                                 aria-label="Yes"
-                                @click="MeetsService.leaveMeeting(id).then(res => { leaveDialog = false; router.back()})"
+                                @click="MeetsService.leaveMeeting(id, guest).then(res => { leaveDialog = false; if (!guest) { router.back() } else { router.push({ name: 'home' }) } })"
                             >Yes</v-btn>
                         </v-card-actions>
                     </v-card>

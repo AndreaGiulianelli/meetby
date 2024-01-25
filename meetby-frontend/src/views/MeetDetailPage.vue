@@ -8,7 +8,13 @@ import { getDurationUnit, getDurationValue, getMeetStatus } from '@/utils/utils'
 const route = useRoute()
 
 const meet = ref()
-MeetsService.get(route.params.meetId).then(response => meet.value = response )
+
+if (route.query.guest) {
+    MeetsService.get(route.params.meetId, route.query.guest).then(response => meet.value = response )
+} else {
+    MeetsService.get(route.params.meetId).then(response => meet.value = response )
+}
+
 </script>
 
 <template>
@@ -44,6 +50,7 @@ MeetsService.get(route.params.meetId).then(response => meet.value = response )
                             :creator-id="meet.meetCreator._id"
                             :creator-name="meet.meetCreator.name"
                             :creator-surname="meet.meetCreator.surname"
+                            :guest="route.query.guest"
                         />
                     </v-col>
                 </v-row>
