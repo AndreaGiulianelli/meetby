@@ -8,7 +8,13 @@ module.exports = (app) => {
         .post(authJwtMiddleware.verify, meetsController.createNewMeet)
 
     app.route('/meets/:meetId')
-        .get(meetsController.getMeet)
+        .get(
+            [
+                authJwtMiddleware.verifyOrGuest,
+                meetMiddleware.isInvited
+            ],
+            meetsController.getMeet
+        )
         .put(
             [ 
                 authJwtMiddleware.verify,
