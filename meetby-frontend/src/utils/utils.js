@@ -7,7 +7,7 @@ export function getDisplayDateTime(datetime) {
 
 export function getMeetStatus(meet) {
     if (meet.plannedDateTime) {
-        if (new Date(meet.plannedDateTime).getTime() > new Date().getTime()) {
+        if (new Date(meet.plannedDateTime).getTime() < new Date().getTime()) {
             return 'Concluded'
         } else {
             return 'Planned'
