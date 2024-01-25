@@ -42,6 +42,12 @@ const routes = [
     component: MeetDetailPage,
     meta: { requiresAuth: true },
   },
+  {
+    path: '/meets/:meetId/edit',
+    name: 'editMeet',
+    component: CreateEditMeetPage,
+    meta: { requiresAuth: true },
+  },
   { path: '/:pathMatch(.*)*', name: 'notound', component: NotFound },
 ]
 
