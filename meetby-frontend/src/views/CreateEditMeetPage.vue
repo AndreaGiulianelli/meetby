@@ -161,14 +161,14 @@ async function submit() {
                                         <h2 class="text-paletteBlue">People</h2>
                                     </v-col>
                                     <v-col cols="4">
-                                        <v-dialog v-model="addPersonDialog">
+                                        <v-dialog width="auto" v-model="addPersonDialog">
                                             <template v-slot:activator="{ props }">
                                                 <v-btn v-bind="props" class="black-btn py-3 px-2" block aria-label="Add person">Add</v-btn>
                                             </template>
 
                                             <v-card>
-                                                <v-card-title class="pb-0 font-weight-bold">
-                                                    Select a person to add
+                                                <v-card-title class="pb-0 font-weight-bold mr-10">
+                                                    Select a person to add 
                                                 </v-card-title>
                                                 <v-card-text class="pt-0">
                                                     <v-switch 
