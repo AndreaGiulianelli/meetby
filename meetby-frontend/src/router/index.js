@@ -65,6 +65,12 @@ router.beforeEach((to) => {
   } else if (to.name != "not-found" && !to.meta.requiresAuth && !to.meta.requiresAuthOrGuest && store.isLoggedIn) {
     return { name: "meets" }
   }
+
+  // If both logged and specifies guest, logged prevails
+  if (to.meta.requiresAuthOrGuest && store.isLoggedIn && to.query.guest) {
+    delete to.query['guest']
+    return to
+  }
 })
 
 export default router
