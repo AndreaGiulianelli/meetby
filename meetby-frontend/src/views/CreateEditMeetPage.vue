@@ -2,6 +2,7 @@
 import { ref } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { parse, toSeconds } from 'iso8601-duration'
+import { getDisplayDateTime } from '@/utils/utils.js'
 import DeletableEntry from '@/components/ui/DeletableEntry.vue'
 import FutureDateTimePicker from '@/components/ui/FutureDateTimePicker.vue'
 import SearchUser from '@/components/user/SearchUser.vue'
@@ -67,12 +68,6 @@ if (isEdit) {
     })
 }
 
-
-
-function getDisplayDateTime(datetime) {
-    const dateAndTime = datetime.split('T')
-    return dateAndTime[0] + ' @ ' + dateAndTime[1]
-}
 
 async function submit() {
     if (isFormValid.value) {

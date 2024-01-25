@@ -4,6 +4,7 @@ import { useRoute } from 'vue-router'
 import { parse, toSeconds } from 'iso8601-duration'
 import MeetDetails from '@/components/meet/MeetDetails.vue'
 import MeetsService from '@/services/MeetsService.js'
+import { getMeetStatus } from '@/utils/utils'
 
 const route = useRoute()
 
@@ -24,8 +25,8 @@ MeetsService.get(route.params.meetId).then(response => meet.value = response )
                     <v-col cols="4">
                         <p 
                             class="text-end mt-2 text-caption font-weight-bold"
-                            :class="'Planning' == 'Planning' ? 'text-paletteOrange' : 'text-paletteGreen'"
-                        >Planning ●</p>
+                            :class="getMeetStatus(meet) == 'Planning' ? 'text-paletteOrange' : 'text-paletteGreen'"
+                        >{{ getMeetStatus(meet) }} ●</p>
                     </v-col>
                 </v-row>
                 <v-row>

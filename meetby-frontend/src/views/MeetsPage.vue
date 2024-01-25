@@ -1,6 +1,7 @@
 <script setup>
 import { ref, watchEffect, } from 'vue'
 import { useAuthStore } from '@/stores/auth.js'
+import { getMeetStatus } from '@/utils/utils'
 import FilteredSearchBar from '@/components/ui/FilteredSearchBar.vue'
 import MeetItem from '@/components/meet/MeetItem.vue'
 import MeetsService from '@/services/MeetsService.js'
@@ -42,7 +43,7 @@ function setMeets(status, filter) {
                         :title="meet.title"
                         :creator="meet.meetCreator.name + ' ' + meet.meetCreator.surname"
                         :partecipants="meet.invitedUsers.length + meet.invitedGuests.length + 1"
-                        :status="meet.plannedDateTime ? 'Planned' : 'Planning'"
+                        :status="getMeetStatus(meet)"
                         :editable="meet.meetCreator._id === store.userId && !meet.plannedDateTime"
                     />
 

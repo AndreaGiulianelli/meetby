@@ -2,6 +2,7 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth.js'
+import { getDisplayDateTime } from '@/utils/utils.js'
 import MeetsService from '@/services/MeetsService.js'
 
 const router = useRouter()
@@ -24,10 +25,6 @@ const props = defineProps({
 const leaveDialog = ref(false)
 const newAvailabilities = ref(props.availabilities.filter(availability => availability.availableUsers.includes(store.userId)).map(availability => availability.availability))
 
-function getDisplayDateTime(datetime) {
-    const dateAndTime = datetime.split('T')
-    return dateAndTime[0] + ' @ ' + dateAndTime[1]
-}
 </script>
 
 <template>
