@@ -43,7 +43,7 @@ function setMeets(status, filter) {
                         :creator="meet.meetCreator.name + ' ' + meet.meetCreator.surname"
                         :partecipants="meet.invitedUsers.length + meet.invitedGuests.length + 1"
                         :status="meet.plannedDateTime ? 'Planned' : 'Planning'"
-                        :editable="meet.meetCreator._id === store.userId"
+                        :editable="meet.meetCreator._id === store.userId && !meet.plannedDateTime"
                     />
 
                     <v-btn class="fab" aria-label="Create a meet" aria-hidden="false" icon="mdi-plus" size="large" color="paletteBlack" elevation="2" to="/meets/new" />
