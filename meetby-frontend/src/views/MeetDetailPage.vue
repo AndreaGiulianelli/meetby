@@ -33,7 +33,7 @@ MeetsService.get(route.params.meetId).then(response => meet.value = response )
                         <MeetDetails
                             :id="meet._id"
                             :duration="getDurationValue(meet.duration)"
-                            :durationUnit="getDurationUnit(meet.duration)"
+                            :duration-unit="getDurationUnit(meet.duration)"
                             :place="meet.place"
                             :description="meet.description"
                             :meeting-url="meet.meetingUrl"
@@ -41,7 +41,9 @@ MeetsService.get(route.params.meetId).then(response => meet.value = response )
                             :guests="meet.invitedGuests"
                             :users="meet.invitedUsers"
                             :availabilities='meet.proposedAvailabilities'
-                            :creatorId="meet.meetCreator._id"
+                            :creator-id="meet.meetCreator._id"
+                            :creator-name="meet.meetCreator.name"
+                            :creator-surname="meet.meetCreator.surname"
                         />
                     </v-col>
                 </v-row>
