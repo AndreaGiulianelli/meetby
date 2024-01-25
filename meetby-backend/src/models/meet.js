@@ -24,7 +24,7 @@ const MeetSchema = Schema({
         type: String,
         required: false,
         validate: [ // It must be a valid URL
-            (val) => /(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-/]))?/.test(val),
+            (val) => val == null || /(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-/]))?/.test(val),
         ]
     },
     proposedAvailabilities: [
