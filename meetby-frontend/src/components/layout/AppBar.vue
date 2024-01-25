@@ -32,7 +32,7 @@ function logout() {
 <template>
     <v-app-bar :elevation="0">
         <v-app-bar-nav-icon icon="mdi-menu" aria-label="Menu" size="x-large" @click.stop="switchDrawer"/>
-            <v-app-bar-title class="app-bar font-weight-black" @click.stop="router.push('/')">
+            <v-app-bar-title class="app-bar font-weight-black" @click.stop="router.push('/')" :aria-label="store.isLoggedIn ? 'My meets' : 'Home'">
                 meetby
             </v-app-bar-title>
         <v-spacer />
@@ -72,6 +72,7 @@ function logout() {
 <style scoped>
 .app-bar {
     font-size: 1.4em;
+    cursor: pointer;
 }
 
 .drawerItem {
