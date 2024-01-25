@@ -32,7 +32,8 @@ MeetsService.get(route.params.meetId).then(response => meet.value = response )
                     <v-col cols="12">
                         <MeetDetails
                             :id="meet._id"
-                            :duration="toSeconds(parse(meet.duration)) / 60"
+                            :duration="toSeconds(parse(meet.duration)) / (meet.duration.slice(-1) == 'M' ? 60 : 3600)"
+                            :durationUnit="meet.duration.slice(-1) == 'M' ? 'min' : 'hour'"
                             :place="meet.place"
                             :description="meet.description"
                             :meeting-url="meet.meetingUrl"

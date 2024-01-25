@@ -10,6 +10,7 @@ const store = useAuthStore()
 const props = defineProps({
     id: String,
     duration: Number,
+    durationUnit: String,
     place: String,
     description: String,
     meetingUrl: String,
@@ -34,7 +35,7 @@ function getDisplayDateTime(datetime) {
         <v-row>
             <v-col cols="12">
                 <h2>Description</h2>
-                <p class="mb-1"><span class="font-weight-bold text-paletteBlue">Duration: </span>{{ duration }} min</p>
+                <p class="mb-1"><span class="font-weight-bold text-paletteBlue">Duration: </span>{{ duration }} {{ durationUnit }}</p>
                 <p class="mb-1"><span class="font-weight-bold text-paletteBlue" v-if="place">Place: </span>{{ place }}</p>
                 <span class="font-weight-bold text-paletteBlue" v-if="description">Description: </span>
                 <p class="mb-1" v-if="description">{{ description }}</p>
