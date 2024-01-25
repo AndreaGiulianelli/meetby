@@ -36,7 +36,7 @@ defineProps({
 
                     <v-card-actions v-if="editable">
                         <v-spacer></v-spacer>
-                        <v-btn append-icon="mdi-pencil" to="/">Edit</v-btn>
+                        <v-btn append-icon="mdi-pencil" aria-label="Edit meet" :to="`/meets/${id}/edit`">Edit</v-btn>
                     </v-card-actions>
                 </v-card>
             </v-col>
