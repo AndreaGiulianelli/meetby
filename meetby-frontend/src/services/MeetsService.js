@@ -33,6 +33,11 @@ class MeetsService {
         return response.status === 204
     }
 
+    async delete(meetId) {
+        const response = await httpClient.delete(`/meets/${meetId}`)
+        return response.status === 204
+    }
+
     async setPersonalAvailabilities(meetId, availabilities) {
         const response = await httpClient.put(`/meets/${meetId}/availabilities`, availabilities)
         return response.status === 204
