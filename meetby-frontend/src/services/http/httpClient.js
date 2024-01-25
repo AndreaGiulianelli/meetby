@@ -28,6 +28,9 @@ function createAxiosClient() {
         if (error.response.status == 401 && !error.response.request.responseURL.includes("/login")) {
             router.push({ name: "login" })
         }
+        if (error.response.status == 404) {
+            router.push({ name: "not-found" })
+        }
         return Promise.reject(error.response);
     });
 
