@@ -20,9 +20,12 @@ const props = defineProps({
     users: Object,
     availabilities: Object,
     creatorId: String,
+    creatorName: String,
+    creatorSurname: String,
 })
 
 const leaveDialog = ref(false)
+const deleteDialog = ref(false)
 const newAvailabilities = ref(props.availabilities.filter(availability => availability.availableUsers.includes(store.userId)).map(availability => availability.availability))
 
 </script>
@@ -74,7 +77,7 @@ const newAvailabilities = ref(props.availabilities.filter(availability => availa
                                 <li
                                     v-for="user in availability.availableUsers"
                                     :key="user"
-                                >{{ users.find((elem) => elem._id == user).name }} {{ users.find((elem) => elem._id == user).surname }}</li>
+                                >{{ user != creatorId ? users.find((elem) => elem._id == user).name : creatorName }} {{ user != creatorId ? users.find((elem) => elem._id == user).surname : creatorSurname }}</li>
                                 <li
                                     v-for="guest in availability.availableGuests"
                                     :key="guest"
@@ -124,6 +127,36 @@ const newAvailabilities = ref(props.availabilities.filter(availability => availa
                                 variant="text"
                                 aria-label="Yes"
                                 @click="MeetsService.leaveMeeting(id).then(res => { leaveDialog = false; router.back()})"
+                            >Yes</v-btn>
+                        </v-card-actions>
+                    </v-card>
+                </v-dialog>
+            </v-col>
+            <v-col cols="12" md="6" class="pt-2 pt-md-3" v-if="creatorId == store.userId && (!meetDate || new Date(meetDate).getTime() > new Date().getTime())">
+                <v-dialog width="auto" persistent v-model="deleteDialog">
+                    <template v-slot:activator="{ props }">
+                        <v-btn block class="red-btn" aria-label="Delete meeting" v-bind="props">
+                            Delete meeting
+                        </v-btn>
+                    </template>
+                    <v-card class="py-5">
+                        <v-card-title class="font-weight-bold">
+                            Delete the meeting?
+                        </v-card-title>
+                        <v-card-text class="pt-0 px-4">Do you really want to delete this meeting? This operation cannot be undone.</v-card-text>
+                        <v-card-actions>
+                            <v-spacer></v-spacer>
+                            <v-btn
+                                color="paletteBlack"
+                                variant="text"
+                                aria-label="No"
+                                @click="deleteDialog = false"
+                            >No</v-btn>
+                            <v-btn
+                                color="paletteRed"
+                                variant="text"
+                                aria-label="Yes"
+                                @click="MeetsService.delete(id).then(res => { deleteDialog = false; router.back()})"
                             >Yes</v-btn>
                         </v-card-actions>
                     </v-card>
