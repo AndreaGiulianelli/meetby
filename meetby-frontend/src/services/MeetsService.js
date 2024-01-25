@@ -14,8 +14,12 @@ class MeetsService {
         }
     }
 
-    async get(meetId) {
-        const response = await httpClient.get(`/meets/${meetId}`)
+    async get(meetId, guest) {
+        const params = {}
+        if (guest) {
+            params['guest'] = guest
+        }
+        const response = await httpClient.get(`/meets/${meetId}`, { params: params })
         if (response.status === 200) {
             return response.data
         } else {
@@ -38,13 +42,21 @@ class MeetsService {
         return response.status === 204
     }
 
-    async setPersonalAvailabilities(meetId, availabilities) {
-        const response = await httpClient.put(`/meets/${meetId}/availabilities`, availabilities)
+    async setPersonalAvailabilities(meetId, availabilities, guest) {
+        const params = {}
+        if (guest) {
+            params['guest'] = guest
+        }
+        const response = await httpClient.put(`/meets/${meetId}/availabilities`, availabilities, { params: params })
         return response.status === 204
     }
 
-    async leaveMeeting(meetId) {
-        const response = await httpClient.delete(`/meets/${meetId}/partecipations`)
+    async leaveMeeting(meetId, guest) {
+        const params = {}
+        if (guest) {
+            params['guest'] = guest
+        }
+        const response = await httpClient.delete(`/meets/${meetId}/partecipations`, { params: params })
         return response.status === 204
     }
 }
