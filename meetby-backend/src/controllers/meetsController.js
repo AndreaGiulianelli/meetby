@@ -108,6 +108,7 @@ exports.getAllMeets = asyncController(async (req, res) => {
                 'meetCreator.name': 1,
                 'meetCreator.surname': 1,
                 'title': 1,
+                'duration': 1,
                 'invitedUsers': 1,
                 'invitedGuests': 1,
                 'creationDate': 1,
