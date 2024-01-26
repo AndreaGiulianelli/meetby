@@ -27,7 +27,7 @@ function setMeets(status, filter) {
 }
 
 function leadingZero(number) {
-    return number > 10 ? number : '0' + `${number}`
+    return number >= 10 ? number : '0' + `${number}`
 }
 
 function adaptDateToQalendar(isoDate) {
