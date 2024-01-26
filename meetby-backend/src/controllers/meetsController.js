@@ -4,7 +4,7 @@ const User = require('../models/user')
 const { asyncController } = require('./utils/asyncController')
 const meetsService = require('../services/meetsService')
 const { ignoreOrderCompare } = require('../utils/arrayUtils')
-
+const notificationService = require('../services/notificationService')
 
 exports.createNewMeet = asyncController(async (req, res) => {
     if (req.body.invitedUsers) {
@@ -29,6 +29,15 @@ exports.createNewMeet = asyncController(async (req, res) => {
             creationDate: new Date()
         })
         await meet.save()
+        await notificationService.pushNotification(
+            notificationService.notificationTypes.invitedMeet,
+            meet._id,
+            meet.invitedUsers.map(user => user.toHexString()),
+            meet.invitedGuests,
+            {
+                meetTitle: meet.title
+            }
+        )
         return res.status(201).send()
     } catch(err) {
         console.log(err)
@@ -55,7 +64,7 @@ exports.updateMeet = asyncController(async (req, res) => {
         const oldMeetAvailabilities = oldMeet.proposedAvailabilities.map(proposedAvailability => proposedAvailability.availability)
         const areProposedAvailabilitiesUpdated = !ignoreOrderCompare(oldMeetAvailabilities, req.body.proposedAvailabilities)
 
-        await Meet.findByIdAndUpdate(req.params.meetId, {
+        const updatedMeet = await Meet.findByIdAndUpdate(req.params.meetId, {
             title: req.body.title,
             duration: req.body.duration,
             creator: req.userId,
@@ -65,10 +74,38 @@ exports.updateMeet = asyncController(async (req, res) => {
             proposedAvailabilities: (req.body.proposedAvailabilities && areProposedAvailabilitiesUpdated) ? req.body.proposedAvailabilities.map(a => ({ availability: a })) : undefined,
             invitedUsers: req.body.invitedUsers,
             invitedGuests: req.body.invitedGuests,
-        }, {runValidators: true} )
+        }, {runValidators: true, new: true} )
+
+        const confirmedUsers = oldMeet.invitedUsers.filter(user => updatedMeet.invitedUsers.includes(user)).map(user => user.toHexString())
+        const confirmedGuests = oldMeet.invitedGuests.filter(guest => updatedMeet.invitedGuests.includes(guest))
         
-        await meetsService.checkAndPlan(req.params.meetId)
-        
+        const planned = await meetsService.checkAndPlan(req.params.meetId)
+        if (!planned) {
+            await notificationService.pushNotification(
+                notificationService.notificationTypes.updateMeet,
+                oldMeet._id,
+                confirmedUsers,
+                confirmedGuests,
+                {
+                    title: updatedMeet.title
+                }
+            )
+    
+            const newInvitedUsers = updatedMeet.invitedUsers.filter((user) => !oldMeet.invitedUsers.includes(user)).map(user => user.toHexString())
+            const newInvitedGuests = updatedMeet.invitedGuests.filter((guest) => !oldMeet.invitedGuests.includes(guest))
+    
+            if (newInvitedUsers.length > 0 || newInvitedGuests.length > 0) {
+                await notificationService.pushNotification(
+                    notificationService.notificationTypes.invitedMeet,
+                    oldMeet._id,
+                    newInvitedUsers,
+                    newInvitedGuests,
+                    {
+                        title: updatedMeet.title
+                    }
+                )
+            }
+        }
         return res.status(204).send()
     } catch(err) {
         console.log(err)
@@ -190,6 +227,16 @@ exports.deleteMeet = asyncController(async (req, res) => {
     if (!deletedMeet) {
         return res.status(404).send()
     }
+
+    await notificationService.pushNotification(
+        notificationService.notificationTypes.deleteMeet,
+        deletedMeet._id,
+        deletedMeet.invitedUsers.map(user => user.toHexString()),
+        deletedMeet.invitedGuests,
+        {
+            meetTitle: deletedMeet.title
+        }
+    )
 
     return res.status(204).send()
 })
