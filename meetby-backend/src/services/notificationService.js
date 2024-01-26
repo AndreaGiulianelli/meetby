@@ -30,11 +30,23 @@ async function pushNotificationToUsers(type, meetId, userIds, data, notification
     }
 }
 
+async function pushNotificationToGuests(type, meetId, guests, data, notificationDate) {
+    const dataToSend = {
+        type: type,
+        meetId: meetId,
+        data: data,
+        date: notificationDate,
+    }
+    console.log(`Send email to ${guests} with this data: ${JSON.stringify(dataToSend)}`)
+}
 
 exports.pushNotification = async (type, meetId, userIds, guests, data) => {
     const notificationDate = new Date()
     if (userIds.length > 0) {
         await pushNotificationToUsers(type, meetId, userIds, data, notificationDate)
+    }
+    if (guests.length > 0) {
+        pushNotificationToGuests(type, meetId, guests, data, notificationDate)
     }
 }
 
