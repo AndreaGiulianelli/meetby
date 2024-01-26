@@ -23,6 +23,25 @@ async function main() {
     httpServer.listen(serverPort, () => {
         console.log(`Web server is running on port ${serverPort}`)
     })
+
+    const io = require('socket.io')(httpServer, {
+        cors: {
+            origin: "*",
+            methods: ["GET", "POST"]
+        }
+    })
+    const sockets = require('./services/sockets').sockets
+    const socketIoMiddleware = require('./middlewares/socketIoMiddleware')
+    io.use(socketIoMiddleware.verify)
+    io.on('connection', (socket) => {
+        console.log('New client socket connected')
+        sockets.set(socket.userId, socket)
+
+        socket.on("disconnect", (reason) => {
+            console.log('Client socket disconnected')
+            sockets.delete(socket.userId)
+        })
+    })
 }
 
 main().catch(error => {
