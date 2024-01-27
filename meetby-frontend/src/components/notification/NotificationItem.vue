@@ -1,7 +1,6 @@
 <script setup>
 defineProps({
     notificationId: String,
-    meetId: String,
     html: String,
     date: Date,
     read: Boolean,

@@ -58,7 +58,6 @@ async function clickNotification(notification) {
                                     v-for="notification in notificationStore.notifications"
                                     :key="notification.id"
                                     :notificationId="notification.id"
-                                    :meetId="notification.meetId"
                                     :html="mapNotificationToHtml(notification)"
                                     :date="new Date(notification.date)"
                                     :read="notification.read"
