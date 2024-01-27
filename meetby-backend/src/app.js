@@ -31,11 +31,13 @@ async function main() {
         }
     })
     const sockets = require('./services/sockets').sockets
+    const socketRoutes = require('./routes/socketRoutes')
     const socketIoMiddleware = require('./middlewares/socketIoMiddleware')
     io.use(socketIoMiddleware.verify)
     io.on('connection', (socket) => {
         console.log('New client socket connected')
         sockets.set(socket.userId, socket)
+        socketRoutes(io, socket)
 
         socket.on("disconnect", (reason) => {
             console.log('Client socket disconnected')
