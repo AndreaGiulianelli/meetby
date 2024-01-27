@@ -19,10 +19,14 @@ class MeetsService {
         if (guest) {
             params['guest'] = guest
         }
-        const response = await httpClient.get(`/meets/${meetId}`, { params: params })
-        if (response.status === 200) {
-            return response.data
-        } else {
+        try {
+            const response = await httpClient.get(`/meets/${meetId}`, { params: params })
+            if (response.status === 200) {
+                return response.data
+            } else {
+                return null
+            }
+        } catch (err) {
             return null
         }
     }
