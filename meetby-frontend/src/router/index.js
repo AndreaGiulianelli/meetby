@@ -6,6 +6,7 @@ import SignUpPage from '@/views/SignUpPage.vue'
 import MeetsPage from '@/views/MeetsPage.vue'
 import MeetDetailPage from '@/views/MeetDetailPage.vue'
 import CreateEditMeetPage from '@/views/CreateEditMeetPage.vue'
+import NotificationsPage from '@/views/NotificationsPage.vue'
 import NotFound from '@/views/NotFound.vue'
 
 const routes = [
@@ -47,6 +48,12 @@ const routes = [
     name: 'editMeet',
     component: CreateEditMeetPage,
     meta: { requiresAuth: true },
+  },
+  {
+    path: '/notifications',
+    name: 'notifications',
+    component: NotificationsPage,
+    meta: { requiresAuth: true }
   },
   { path: '/:pathMatch(.*)*', name: 'not-found', component: NotFound },
 ]
