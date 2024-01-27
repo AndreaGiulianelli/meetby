@@ -46,6 +46,7 @@ function adaptDateToQalendar(isoDate) {
 
             <v-window v-model="tab" class="h-100">
                 <v-window-item value="meets" class="mi h-100 pt-5">
+                    <h1 v-show="false">Meets</h1>
                     <FilteredSearchBar v-model="search" class="pb-0"/>
 
                     <MeetItem 
@@ -62,6 +63,7 @@ function adaptDateToQalendar(isoDate) {
                     <v-btn class="fab" aria-label="Create a meet" aria-hidden="false" icon="mdi-plus" size="large" color="paletteBlack" elevation="2" to="/meets/new" />
                 </v-window-item>
                 <v-window-item value="calendar" class="pt-5 is-light-mode">
+                    <h1 v-show="false">Calendar</h1>
                     <Qalendar
                         :selectedDate="new Date()"
                         :events="meets.filter((meet) => getMeetStatus(meet) != 'Planning').map((meet) => {
