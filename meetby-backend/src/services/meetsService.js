@@ -22,14 +22,17 @@ exports.checkAndPlan = async (meetId) => {
     if (feasibleDate) {
         // feasible data found, plan meet
         await Meet.findByIdAndUpdate(meetId, { plannedDateTime: feasibleDate.split('/')[0] }, {runValidators: true})
+        
+        const userToSendNotification = meet.invitedUsers.map(user => user.toHexString())
+        userToSendNotification.push(meet.creator.toHexString())
 
         await notificationService.pushNotification(
             notificationService.notificationTypes.plannedMeet,
             meetId,
-            meet.invitedUsers.map(user => user.toHexString()),
+            userToSendNotification,
             meet.invitedGuests,
             {
-                title: meet.title
+                meetTitle: meet.title
             }
         )
 

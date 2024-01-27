@@ -87,7 +87,7 @@ exports.updateMeet = asyncController(async (req, res) => {
                 confirmedUsers,
                 confirmedGuests,
                 {
-                    title: updatedMeet.title
+                    meetTitle: updatedMeet.title
                 }
             )
     
@@ -101,7 +101,7 @@ exports.updateMeet = asyncController(async (req, res) => {
                     newInvitedUsers,
                     newInvitedGuests,
                     {
-                        title: updatedMeet.title
+                        meetTitle: updatedMeet.title
                     }
                 )
             }
