@@ -55,5 +55,6 @@ exports.notificationTypes = {
     invitedMeet: "meet:invited",
     updateMeet: "meet:updated",
     deleteMeet: "meet:deleted",
-    plannedMeet: "meet:planned"
+    plannedMeet: "meet:planned",
+    newMessage: "message:new",
 }
