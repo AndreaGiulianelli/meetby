@@ -37,7 +37,7 @@ exports.getUsers = asyncController(async (req, res) => {
 })
 
 exports.getAllNotifications = asyncController(async (req, res) => {
-    const notifications = await Notification.find({ recipients: new mongoose.Types.ObjectId(req.userId) })
+    const notifications = await Notification.find({ recipients: new mongoose.Types.ObjectId(req.userId) }).sort({ date: -1 })
 
     if (notifications && notifications.length != 0) {
         const notificationsDto = notifications.map(notification => { return {
