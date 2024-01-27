@@ -20,8 +20,9 @@ async function pushNotificationToUsers(type, meetId, userIds, data, notification
                     id: notification._id,
                     type: type,
                     meetId: meetId,
-                    notificationDate: notificationDate,
-                    data: data
+                    date: notificationDate,
+                    data: data,
+                    read: false,
                 })
             }
         })
