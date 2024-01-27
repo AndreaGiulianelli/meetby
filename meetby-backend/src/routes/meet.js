@@ -1,6 +1,7 @@
 const authJwtMiddleware = require('../middlewares/authJwtMiddleware')
 const meetMiddleware = require('../middlewares/meetMiddleware')
 const meetsController = require('../controllers/meetsController')
+const chatController = require('../controllers/chatController')
 
 module.exports = (app) => {
     app.route('/meets')
@@ -50,5 +51,14 @@ module.exports = (app) => {
                 meetMiddleware.isMeetNotConcluded
             ],
             meetsController.leaveMeet
+        )
+    
+    app.route('/meets/:meetId/chat')
+        .get(
+            [
+                authJwtMiddleware.verify,
+                meetMiddleware.isInvited
+            ],
+            chatController.getMeetChat
         )
 }
