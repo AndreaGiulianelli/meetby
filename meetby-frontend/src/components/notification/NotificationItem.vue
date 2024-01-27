@@ -18,6 +18,7 @@ function notificationClicked() {
     <v-list-item
         @click="notificationClicked"
         :value="notificationId"
+        :subtitle="date.toLocaleString()"
         class="px-0 rounded"
     >
         <template v-slot:title>
