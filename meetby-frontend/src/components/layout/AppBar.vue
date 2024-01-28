@@ -48,15 +48,17 @@ function logout() {
     </v-app-bar>
 
     <v-navigation-drawer v-model="drawer" floating :class="{ 'w-100': mobile }">
-        <v-list-item :subtitle="`@${authStore.username}`" class="py-3" >
-            <template v-slot:title>
-                <span class="font-weight-bold">{{ authStore.name }} {{ authStore.surname }}</span>
-            </template>
-            <template v-slot:prepend>
-                <v-avatar color="paletteBlue" icon="mdi-account-circle"></v-avatar>
-            </template>
-        </v-list-item>
-        <v-divider></v-divider>
+        <template v-if="authStore.isLoggedIn">
+            <v-list-item :subtitle="`@${authStore.username}`" class="py-3">
+                <template v-slot:title>
+                    <span class="font-weight-bold">{{ authStore.name }} {{ authStore.surname }}</span>
+                </template>
+                <template v-slot:prepend>
+                    <v-avatar color="paletteBlue" icon="mdi-account-circle"></v-avatar>
+                </template>
+            </v-list-item>
+            <v-divider></v-divider>
+        </template>
         <v-list density="compact" nav v-if="authStore.isLoggedIn">
             <v-list-item 
                 v-for="item in items"
