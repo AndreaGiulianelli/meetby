@@ -25,6 +25,10 @@ function mapNotificationToHtml(notification) {
             text = `<span class='font-weight-bold'>${notification.data.meetTitle}</span> has been planned`
             break
 
+        case 'message:new':
+            text = `New message in <span class='font-weight-bold'>${notification.data.meetTitle}</span> meet chat`
+            break
+
         default:
             text = null
     }
