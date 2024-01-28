@@ -24,7 +24,7 @@ exports.getMeetChat = asyncController(async (req, res) => {
         },
         {
             $project: {
-                'sender._id': 1,
+                'sender.id': '$sender._id',
                 'sender.name': 1,
                 'sender.surname': 1,
                 'sender.username': 1,
@@ -35,7 +35,10 @@ exports.getMeetChat = asyncController(async (req, res) => {
         },
         {
             $unwind: "$sender"
-        }
+        },
+        {
+            $unwind: "$sender.id"
+        },
     ]
 
     const messages = await Message.aggregate(pipeline)
@@ -81,9 +84,8 @@ exports.sendNewMessage = async (io, senderSocket, message) => {
             message: newMessage.message
         }
 
-        io.emit('message:new', messageToSend) // confirm message to sender
-        // send message to other invited users listening
-        const deliveredMessageUser = [senderSocket.userId]
+        // send message to users listening
+        const deliveredMessageUser = []
         userToSendMessage.forEach(userId => {
             const socket = sockets.get(userId)
             if (socket) {
@@ -92,12 +94,10 @@ exports.sendNewMessage = async (io, senderSocket, message) => {
             }
         })
 
-        // send notification to everyone else
-        const userToSendNotification = userToSendMessage.filter(user => !deliveredMessageUser.includes(user))
         await notificationService.pushNotification(
             notificationService.notificationTypes.newMessage,
             newMessage.meetId,
-            userToSendNotification,
+            userToSendMessage.filter(user => user != newMessage.sender),
             [],
             {
                 meetTitle: meet.title
