@@ -68,6 +68,7 @@ function sendMessage() {
                             class="rounded-circle bg-paletteBlue"
                             color="paletteWhite"
                             icon="mdi-send"
+                            aria-label="Send message"
                             @click="sendMessage"
                         >
                         </v-btn>
