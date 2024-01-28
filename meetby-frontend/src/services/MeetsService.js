@@ -63,6 +63,15 @@ class MeetsService {
         const response = await httpClient.delete(`/meets/${meetId}/partecipations`, { params: params })
         return response.status === 204
     }
+
+    async getChat(meetId) {
+        const response = await httpClient.get(`/meets/${meetId}/chat`)
+        if (response.status === 200) {
+            return response.data
+        } else {
+            return []
+        }
+    }
 }
 
 export default new MeetsService()
