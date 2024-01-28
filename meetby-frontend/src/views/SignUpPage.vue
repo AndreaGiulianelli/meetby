@@ -94,7 +94,7 @@ async function signup() {
 </script>
 
 <template>
-    <v-row>
+    <v-row class="flex-grow-0">
         <v-col cols="12" class="mb-2">
             <div class="px-6 pt-5 text-center">
                 <h1 class="mb-2">Create your meetby account</h1>

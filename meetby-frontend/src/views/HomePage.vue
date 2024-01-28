@@ -1,5 +1,5 @@
 <template>
-    <v-row>
+    <v-row class="flex-grow-0">
         <v-col cols="12">
             <div class="px-2 py-5 text-center">
                 <p class="main-title font-weight-black mb-12">The place to coordinate your meet(by)</p>

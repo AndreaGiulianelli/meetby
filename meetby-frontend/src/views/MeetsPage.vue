@@ -36,7 +36,7 @@ function adaptDateToQalendar(isoDate) {
 </script>
 
 <template>
-    <v-row class="h-100">
+    <v-row class="flex-grow-1">
         <v-spacer></v-spacer>
         <v-col cols="12" md="6" lg="4">
             <v-tabs v-model="tab" align-tabs="center">
