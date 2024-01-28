@@ -15,7 +15,7 @@ export const useNotificationStore = defineStore('notification', () => {
 
             socketManager.socket.on("notification", (notification) => {
                 if (!notifications.value.includes(notification)) {
-                    notifications.value.push(notification)
+                    notifications.value.unshift(notification)
                 }
             })
         } else {
