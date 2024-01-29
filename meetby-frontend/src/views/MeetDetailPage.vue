@@ -25,7 +25,11 @@ if (route.query.guest) {
 
 watchEffect(() => {
     if (socketManager.socket) {
-        socketManager.socket.on("message:new", (message) => meetChat.value.push(message))
+        socketManager.socket.on("message:new", (message) => {
+            if (message.meetId == route.params.meetId) {
+                meetChat.value.push(message)
+            }
+        })
     }
 })
 
