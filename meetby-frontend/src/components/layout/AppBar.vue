@@ -17,6 +17,7 @@ const items = [
         value: 'meets',
         icon: 'mdi-view-dashboard',
         to: '/meets',
+        ariaLabel: 'Go to my meets'
     }
 ]
 
@@ -66,6 +67,7 @@ function logout() {
                 :value="item.value"
                 :key="item.value"
                 :to="item.to"
+                :aria-label="item.ariaLabel"
                 @click="switchDrawer">
                 <v-list-item-title class="drawerItem">{{ item.title }}</v-list-item-title>
             </v-list-item>

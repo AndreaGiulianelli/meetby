@@ -60,11 +60,11 @@ async function login() {
     <v-row>
         <v-spacer></v-spacer>
         <v-col cols="11" md="4" lg="3">
-            <v-form v-model="isFormValid" @submit.prevent="login">
+            <v-form v-model="isFormValid" @submit.prevent="login" autocomplete="on">
                 <v-container>
                     <v-row>
                         <v-col cols="12">
-                            <v-text-field :rules="emailRules" bg-color="paletteGrey" v-model="email" label="Email" color="black" type="email" autocomplete="true" required/>
+                            <v-text-field :rules="emailRules" bg-color="paletteGrey" v-model="email" label="Email" color="black" type="email" required/>
                             <v-text-field :rules="passwordRules" bg-color="paletteGrey" v-model="password" label="Password" :type="showPassword ? 'text' : 'password'" color="black" required 
                                 @click:append-inner="showPassword = !showPassword" :append-inner-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'" />
                             <div class="font-weight-bold text-paletteRed" v-if="showLoginError">Email or Password are incorrect</div>

@@ -2,7 +2,7 @@
     <v-row class="flex-grow-0">
         <v-col cols="12">
             <div class="px-2 py-5 text-center">
-                <p class="main-title font-weight-black mb-12">The place to coordinate your meet(by)</p>
+                <h1 class="main-title font-weight-black mb-12">The place to coordinate your meet(by)</h1>
                 <p class="px-5">
                     Let <span class="font-weight-black">meetby coordinate</span> your meetings with your friends, collegues, while <span class="font-weight-black">you have fun</span>.
                 </p>

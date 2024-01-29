@@ -104,16 +104,16 @@ async function signup() {
     <v-row>
         <v-spacer></v-spacer>
         <v-col cols="11" md="4" lg="3">
-            <v-form v-model="isFormValid" @submit.prevent="signup">
+            <v-form v-model="isFormValid" @submit.prevent="signup" autocomplete="on">
                 <v-container>
                     <v-row>
                         <v-col cols="12">
-                            <v-text-field class="mb-3" hide-details="auto" :rules="nameRules" bg-color="paletteGrey" v-model="name" label="Name" color="black" type="text" autocomplete="true" required/>
-                            <v-text-field class="mb-3" hide-details="auto" :rules="surnameRules" bg-color="paletteGrey" v-model="surname" label="Surname" color="black" type="text" autocomplete="true" required/>
+                            <v-text-field class="mb-3" hide-details="auto" :rules="nameRules" bg-color="paletteGrey" v-model="name" label="Name" color="black" type="text" required/>
+                            <v-text-field class="mb-3" hide-details="auto" :rules="surnameRules" bg-color="paletteGrey" v-model="surname" label="Surname" color="black" type="text" required/>
                             <v-text-field class="mb-3" hide-details="auto" :rules="usernameRules" bg-color="paletteGrey" v-model="username" label="Username" color="black" type="text" required/>
                         </v-col>
                         <v-col cols="12">
-                            <v-text-field class="mb-3" hide-details="auto" :rules="emailRules" bg-color="paletteGrey" v-model="email" label="Email" color="black" type="email" autocomplete="true" required/>
+                            <v-text-field class="mb-3" hide-details="auto" :rules="emailRules" bg-color="paletteGrey" v-model="email" label="Email" color="black" type="email" required/>
                             <v-text-field class="mb-3" hide-details="auto" :rules="passwordRules" hint="At least 8 characters" bg-color="paletteGrey" v-model="password" label="Password" 
                                 :append-inner-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'" :type="showPassword ? 'text' : 'password'" color="black" @click:append-inner="showPassword = !showPassword" required />
                             <v-text-field class="mb-3" hide-details="auto" :rules="confirmPasswordRules" bg-color="paletteGrey" label="Confirm password" :append-inner-icon="showConfirmPassword ? 'mdi-eye' : 'mdi-eye-off'"

@@ -93,7 +93,11 @@ if (props.guest) {
                             <v-checkbox
                                 v-model="newAvailabilities"
                                 :value="availability.availability"
-                            ></v-checkbox>
+                            >
+                                <template v-slot:label>
+                                    <span v-show="false">Select availability {{ new Date(availability.availability.split('/')[0]).toLocaleString() }}</span>
+                                </template>
+                            </v-checkbox>
                         </v-col>
                     </v-row>
                 </v-container>
