@@ -1,0 +1,55 @@
+---
+version: '3'
+services:
+  
+  mongo:
+    image: mongo
+    container_name: mongo
+    networks:
+      - meetby-network
+    ports:
+      - "27017:27017"
+    volumes:
+      - "./mongoVolume:/data/db"
+    restart: always
+
+  backend:
+    container_name: meetby-backend
+    restart: always
+    build: 
+      context: ./meetby-backend
+      args:
+        - "PORT:3000"
+    depends_on:
+      - mongo
+    ports:
+      - "3000:3000"
+    networks:
+      - meetby-network
+    environment:
+      MONGODB_CONNECTION_STRING: mongodb://mongo:27017
+      WEB_SERVER_PORT: 3000
+      JWT_SECRET_KEY: ${JWT_SECRET_KEY}
+
+  frontend:
+    container_name: meetby-frontend
+    restart: always
+    build:
+      context: ./meetby-frontend
+      args:
+        - VITE_MEETBY_BACKEND_BASE_URL=http://localhost:3000
+    depends_on:
+      - backend
+    ports:
+      - "80:80"
+    networks:
+      - meetby-network
+
+networks:
+  meetby-network:
+    driver: bridge
+    driver_opts:
+      com.docker.network.bridge.name: "meetbynet"
+
+volumes:
+  mongoVolume:
