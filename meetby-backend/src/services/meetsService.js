@@ -14,7 +14,7 @@ function findFeasibleDate(meet) {
 
 exports.checkAndPlan = async (meetId) => {
     const meet = await Meet.findById(meetId)
-    if (!meet) {
+    if (!meet || meet.plannedDateTime) { // meet do not exist or already planned
         return false
     }
 
