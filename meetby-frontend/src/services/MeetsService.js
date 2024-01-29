@@ -65,10 +65,14 @@ class MeetsService {
     }
 
     async getChat(meetId) {
-        const response = await httpClient.get(`/meets/${meetId}/chat`)
-        if (response.status === 200) {
-            return response.data
-        } else {
+        try {
+            const response = await httpClient.get(`/meets/${meetId}/chat`)
+            if (response.status === 200) {
+                return response.data
+            } else {
+                return []
+            }
+        } catch (err) {
             return []
         }
     }
