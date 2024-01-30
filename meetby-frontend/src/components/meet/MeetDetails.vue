@@ -44,7 +44,7 @@ if (props.guest) {
                 <p class="mb-1" v-if="place"><span class="font-weight-bold text-paletteBlue">Place: </span>{{ place }}</p>
                 <span class="font-weight-bold text-paletteBlue" v-if="description">Description: </span>
                 <p class="mb-1" v-if="description">{{ description }}</p>
-                <p class="mb-1" v-if="meetingUrl"><span class="font-weight-bold text-paletteBlue">Meeting url: </span>{{ meetingUrl }}</p>
+                <p class="mb-1" v-if="meetingUrl"><span class="font-weight-bold text-paletteBlue">Meeting url: </span><a :href="meetingUrl">{{ meetingUrl }}</a></p>
                 <p class="mb-1" v-if="meetDate"><span class="font-weight-bold text-paletteBlue">Meet date: </span>{{ meetDate.toLocaleString() }}</p>
             </v-col>
         </v-row>
