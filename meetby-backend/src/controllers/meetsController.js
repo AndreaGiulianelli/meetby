@@ -65,6 +65,9 @@ exports.updateMeet = asyncController(async (req, res) => {
         const oldMeetAvailabilities = oldMeet.proposedAvailabilities.map(proposedAvailability => proposedAvailability.availability)
         const areProposedAvailabilitiesUpdated = !ignoreOrderCompare(oldMeetAvailabilities, req.body.proposedAvailabilities)
 
+        const deletedUsers = oldMeet.invitedUsers.filter(user => !req.body.invitedUsers.includes(user.toHexString()))
+        const deletedGuests = oldMeet.invitedGuests.filter(guest => !req.body.invitedGuests.includes(guest))
+
         const updatedMeet = await Meet.findByIdAndUpdate(req.params.meetId, {
             title: req.body.title,
             duration: req.body.duration,
@@ -76,6 +79,15 @@ exports.updateMeet = asyncController(async (req, res) => {
             invitedUsers: req.body.invitedUsers,
             invitedGuests: req.body.invitedGuests,
         }, {runValidators: true, new: true} )
+
+        if (deletedUsers.length > 0 || deletedGuests.length > 0) {
+            await Meet.findByIdAndUpdate(req.params.meetId, {
+                $pull: { 
+                    'proposedAvailabilities.$[].availableUsers': { $in: deletedUsers },   
+                    'proposedAvailabilities.$[].availableGuests': { $in: deletedGuests },   
+                },
+            })
+        }
 
         const confirmedUsers = oldMeet.invitedUsers.filter(user => updatedMeet.invitedUsers.includes(user)).map(user => user.toHexString())
         const confirmedGuests = oldMeet.invitedGuests.filter(guest => updatedMeet.invitedGuests.includes(guest))
