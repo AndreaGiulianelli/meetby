@@ -1,6 +1,7 @@
 const mongoose = require('mongoose')
 const Meet = require('../models/meet')
 const User = require('../models/user')
+const Message = require('../models/message')
 const { asyncController } = require('./utils/asyncController')
 const meetsService = require('../services/meetsService')
 const { ignoreOrderCompare } = require('../utils/arrayUtils')
@@ -227,6 +228,8 @@ exports.deleteMeet = asyncController(async (req, res) => {
     if (!deletedMeet) {
         return res.status(404).send()
     }
+
+    await Message.deleteMany({ meetId: new mongoose.Types.ObjectId(req.params.meetId) })
 
     await notificationService.pushNotification(
         notificationService.notificationTypes.deleteMeet,
